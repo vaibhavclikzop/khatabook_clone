@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="256" height="256" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="linear-gradient" x1="0.5" x2="0.169" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#ffda88"/>
+      <stop offset="1" stop-color="#ffaf2e"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-2" x1="0.656" x2="0.339" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#7a8ad1"/>
+      <stop offset="1" stop-color="#5160a1"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-3" x1="-0.194" y1="0.392" x2="0.802" y2="0.724" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+      <stop offset="0.288" stop-color="#656565" stop-opacity="0"/>
+      <stop offset="0.353"/>
+      <stop offset="0.653"/>
+      <stop offset="0.719" stop-color="#858585" stop-opacity="0"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <g id="logo" transform="translate(-6.967 -24.966)">
+    <path id="Union_1" data-name="Union 1" d="M173.178,256,128,116.36,82.822,256H0L82.822,0h90.357L256,256Z" transform="translate(6.967 24.966)" fill="url(#linear-gradient)"/>
+    <path id="Subtraction_2" data-name="Subtraction 2" d="M127.89,255.774a128.868,128.868,0,0,1-25.774-2.6,127.546,127.546,0,0,1-16.991-4.728l23.185-71.662a52.645,52.645,0,0,0,72.241-48.9V0H255.78V127.884a128.817,128.817,0,0,1-2.6,25.774,127.19,127.19,0,0,1-19.243,45.73,128.268,128.268,0,0,1-56.268,46.336,127.268,127.268,0,0,1-24.007,7.452A128.867,128.867,0,0,1,127.89,255.774ZM19.439,195.7h0v0A127.382,127.382,0,0,1,0,127.884V0H75.228V23.26Z" transform="translate(7 24.999)" fill="url(#linear-gradient-2)"/>
+    <path id="Subtraction_4" data-name="Subtraction 4" d="M127.89,255.774a127.551,127.551,0,0,1-42.767-7.327l23.185-71.662a52.645,52.645,0,0,0,72.243-48.9V0H255.78V127.884a128.8,128.8,0,0,1-2.6,25.774,127.2,127.2,0,0,1-19.243,45.731,128.254,128.254,0,0,1-56.268,46.335,127.206,127.206,0,0,1-24.007,7.452A128.8,128.8,0,0,1,127.89,255.774ZM19.437,195.7v0h0v0A127.388,127.388,0,0,1,0,127.884V0H75.228V23.256L19.438,195.695Z" transform="translate(7 25.004)" opacity="0.26" fill="url(#linear-gradient-3)"/>
+    <g id="Ellipse_1" data-name="Ellipse 1" transform="translate(74.968 104.966)" fill="rgba(255,255,255,0.5)" stroke="rgba(255,255,255,0.14)" stroke-width="1">
+      <circle cx="60" cy="60" r="60" stroke="none"/>
+      <circle cx="60" cy="60" r="59.5" fill="none"/>
+    </g>
+  </g>
+</svg>

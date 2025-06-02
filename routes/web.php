@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Admin;
 use App\Http\Controllers\AjaxCall;
-use App\Http\Controllers\Authentication;
+use App\Http\Controllers\mobile\Authentication;
 use App\Http\Controllers\BulkImport;
 use App\Http\Controllers\InwardStock;
 use App\Http\Controllers\LeadManagement;
@@ -41,43 +41,11 @@ Route::get('reset-software/{key}', [ResetSoftware::class, 'ResetSoftware'])->nam
 Route::post('ResetSoftware', [ResetSoftware::class, 'ResetSoft'])->name('ResetSoftware');
 
 
-Route::get('/', [Authentication::class, 'SuperAdmin'])->name('/');
-Route::post('/', [Authentication::class, 'SuperAdminLogin'])->name('SuperAdminLogin');
+Route::get('/login', [Authentication::class, 'user'])->name('login');
+Route::post('/user', [Authentication::class, 'user_login'])->name('user.login');
 
-Route::group(['middleware' => ['SuperAdmin']], function () {
-
-    Route::get('settings', [Masters::class, 'settings'])->name('settings');
-    Route::post('SaveSettings', [Masters::class, 'SaveSettings'])->name('SaveSettings');
+Route::middleware(['verify_user'])->group(function () 
+{
+    Route::get('/dashboard', [Authentication::class, 'showDashboard'])->name('dashboard.view');
     Route::get('logout', [Authentication::class, 'logout'])->name('Logout');
-    Route::get('dashboard', [Admin::class, 'Dashboard'])->name('dashboard');
-    Route::post('GetUserDetails', [Masters::class, 'GetUserDetails'])->name('GetUserDetails');
-    Route::get('users', [Masters::class, 'users'])->name('users');
-    Route::post('SaveUser', [Masters::class, 'SaveUser'])->name('SaveUser');
-    Route::post('SaveTeam', [Masters::class, 'SaveTeam'])->name('SaveTeam');
-    Route::get('user-role', [Masters::class, 'UserRole'])->name('user-role');
-
-    Route::post('SaveRole', [Masters::class, 'SaveRole'])->name('SaveRole');
-
-    Route::get('user-permission/{id}', [Masters::class, 'UserPermission'])->name('user-permission');
-
-    Route::post('SaveUserPermission', [Masters::class, 'SaveUserPermission'])->name('SaveUserPermission');
-    Route::post('RemovePermission', [Masters::class, 'RemovePermission'])->name('RemovePermission');
-
-    // ajax call
-    Route::post('GetCity', [Masters::class, 'GetCity'])->name('GetCity');
-    Route::post('StartDay', [Admin::class, 'StartDay'])->name('StartDay');
-    Route::post('EndDay', [Admin::class, 'EndDay'])->name('EndDay');
-    Route::get('profile', [Admin::class, 'Profile'])->name('profile');
-    Route::post('SaveProfile', [Admin::class, 'SaveProfile'])->name('SaveProfile');
-
-
-
-    //masters
-    Route::get('customers', [Masters::class, 'Customers'])->name('customers');
-    Route::post('SaveCustomer', [Masters::class, 'SaveCustomer'])->name('SaveCustomer');
-
-
-    //masters
-    Route::get('vendor', [Masters::class, 'vendor'])->name('vendor');
-    Route::post('SaveVendor', [Masters::class, 'SaveVendor'])->name('SaveVendor');
 });
