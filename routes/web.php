@@ -12,6 +12,7 @@ use App\Http\Controllers\ResetSoftware;
 use App\Http\Controllers\Sales;
 use App\Http\Controllers\StockReport;
 use Illuminate\Database\Console\Migrations\ResetCommand;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 /*
