@@ -66,6 +66,7 @@ class SuperAdmin
                 $child_id = implode(', ', $child_ids);
                 $child_id = explode(',', $child_id);
                 $rolePermissions = DB::table("role_permission")->where("role_id", $user->role_id)->get();
+                // dd($rolePermissions); 
                 $attendance = DB::table("attendance")->where("emp_id", $user->id)->whereDate("start_time",now())->first();
 
                 View::share('rolePermissions', $rolePermissions);

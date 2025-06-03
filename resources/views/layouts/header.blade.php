@@ -73,9 +73,9 @@
  </head>
 
  <body>
-     <div id="global-loader">
+     {{-- <div id="global-loader">
          <div class="page-loader"></div>
-     </div>
+     </div> --}}
 
      <!-- Main Wrapper -->
      <div class="main-wrapper">
@@ -387,11 +387,11 @@
                                          </div>
                                          <div class="card-body">
                                              <a class="dropdown-item d-inline-flex align-items-center p-0 py-2"
-                                                 href="/profile">
+                                                 href="{{ route('profile') }}">
                                                  <i class="ti ti-user-circle me-1"></i>My Profile
                                              </a>
                                              <a class="dropdown-item d-inline-flex align-items-center p-0 py-2"
-                                                 href="/settings">
+                                                 href="{{ route('settings') }}">
                                                  <i class="ti ti-settings me-1"></i>Settings
                                              </a>
 
@@ -400,7 +400,7 @@
                                          </div>
                                          <div class="card-footer">
                                              <a class="dropdown-item d-inline-flex align-items-center p-0 py-2"
-                                                 href="/logout">
+                                                 href="{{ route('Logout') }}">
                                                  <i class="ti ti-login me-2"></i>Logout
                                              </a>
                                          </div>
@@ -416,9 +416,9 @@
                      <a href="javascript:void(0);" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
                          aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
                      <div class="dropdown-menu dropdown-menu-end">
-                         <a class="dropdown-item" href="/profile">My Profile</a>
-                         <a class="dropdown-item" href="/settings">Settings</a>
-                         <a class="dropdown-item" href="/logout">Logout</a>
+                         <a class="dropdown-item" href="{{ route('profile') }}">My Profile</a>
+                         <a class="dropdown-item" href="{{ route('settings') }}">Settings</a>
+                         <a class="dropdown-item" href="{{ route('Logout') }}">Logout</a>
                      </div>
                  </div>
                  <!-- /Mobile Menu -->
@@ -451,7 +451,7 @@
                              <ul>
 
                                  <li>
-                                     <a href="/">
+                                     <a href="{{ route('dashboard') }}">
                                          <i class="ti ti-smart-home"></i><span>Dashboard</span>
                                      </a>
                                  </li>
@@ -471,8 +471,8 @@
                                          <span class="menu-arrow"></span>
                                      </a>
                                      <ul>
-                                         <li><a href="/user-role">User Role</a></li>
-                                         <li><a href="/users">Users</a></li>
+                                         <li><a href="{{ route('user-role') }}">User Role</a></li>
+                                         <li><a href="{{ route('users') }}">Users</a></li>
 
                                      </ul>
                                  </li>
@@ -485,8 +485,8 @@
                                          <span class="menu-arrow"></span>
                                      </a>
                                      <ul>
-                                         <li><a href="/customers">Customers</a></li>
-                                         <li><a href="/vendor">Vendor</a></li>
+                                         <li><a href="{{ route('customers') }}">Customers</a></li>
+                                         <li><a href="{{ route('suppliers') }}">Supplier</a></li>
 
                                      </ul>
                                  </li>
@@ -500,17 +500,22 @@
                              <ul>
 
                                  <li>
-                                     <a href="/profile">
+                                     <a href="{{ route('transactions') }}">
+                                         <i class="fa fa-user" aria-hidden="true"></i><span>Transactions</span>
+                                     </a>
+                                 </li>
+                                 <li>
+                                     <a href="{{ route('profile') }}">
                                          <i class="fa fa-user" aria-hidden="true"></i><span>Profile</span>
                                      </a>
                                  </li>
                                  <li>
-                                     <a href="/settings">
+                                     <a href="{{ route('settings') }}">
                                          <i class="fa fa-gear" aria-hidden="true"></i><span>Settings</span>
                                      </a>
                                  </li>
                                  <li>
-                                     <a href="/logout">
+                                     <a href="{{ route('Logout') }}">
                                          <i class="fa fa-sign-out" aria-hidden="true"></i> <span>Logout</span>
                                      </a>
                                  </li>
