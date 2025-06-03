@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Flasher\Laravel\Facade\Flasher;
 use Jenssegers\Agent\Agent;
-
+use App\Models\User;
+use Illuminate\Pagination\LengthAwarePaginator;
 class Authentication extends Controller
 {
     public function user()
@@ -56,6 +57,7 @@ class Authentication extends Controller
                     'platform' => $browser . " / " . $version . ' / ' . $platform,
                 ));
                 session()->put('token', $token);
+                session()->put('user_id', $user->id);
                 session()->put('user', $user);
             } 
             else 
@@ -73,7 +75,37 @@ class Authentication extends Controller
 
     public function showDashboard()
     {
-        return view("mobile.dashboard"); 
+        $user = DB::table('users')->where('id', session()->get('user_id'))->value('my_business');
+        $customers_info = DB::table('customers')
+        ->where('user_id', session()->get('user_id'))
+        ->select('id', 'name', 'number', 'type')
+        ->addSelect([
+            'latest_amount' => DB::table('transactions')
+                ->select('amount')
+                ->whereColumn('transactions.customer_id', 'customers.id')
+                ->orderBy('created_at', 'desc')
+                ->limit(1)
+        ])
+        ->paginate(10);
+
+        $transactions = DB::table('transactions')
+        ->where('transactions.user_id', session()->get('user_id'))
+        ->get();
+        $finalAmount = 0;
+
+        foreach ($transactions as $transaction) 
+        {
+            if ($transaction->type === 'take') 
+            {
+                $finalAmount += $transaction->amount;
+            } 
+            elseif ($transaction->type === 'give') 
+            {
+                $finalAmount -= $transaction->amount;
+            }
+        }
+
+        return view("mobile.dashboard", compact('user', 'customers_info', 'finalAmount')); 
     }
 
     public function logout(Request $request)

@@ -1,9 +1,4 @@
 
-    <div class="position-fixed bottom-0 end-0 m-3 z-index-5" id="fixedbuttons">
-        <button class="btn btn-square btn-theme shadow rounded-circle" type="button" data-bs-toggle="offcanvas" data-bs-target="#theming" aria-controls="theming"><i class="bi bi-palette"></i></button>
-        <br>
-        <button class="btn btn-theme btn-square shadow mt-2 d-none rounded-circle" id="backtotop"><i class="bi bi-arrow-up"></i></button>
-    </div>
     <div class="modal adminuiux-modal fade" id="addreminder" tabindex="-1" aria-labelledby="addremindermodalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -28,6 +23,11 @@
             </div>
         </div>
     </div>
-    <script src="{{ asset('mobile/js/inner-js/script.auth.js') }}"></script>
+    <!-- <script src="{{ asset('mobile/js/inner-js/script.auth.js') }}"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
 </body>
 </html>

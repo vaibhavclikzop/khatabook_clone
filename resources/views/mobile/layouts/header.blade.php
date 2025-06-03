@@ -8,6 +8,7 @@
     <meta name="apple-mobile-web-app-title" content="TestingUIUX" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="apple-mobile-web-app-status-bar-style" content="white" />
     <!-- <link rel="apple-touch-icon" href="assets/img/logo-512.png" /> -->
     <meta http-equiv="x-ua-compatible" content="ie=edge">

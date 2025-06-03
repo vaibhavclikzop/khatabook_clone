@@ -65149,4 +65149,139 @@
 		}, window.dayGridPlugin = oL, window.timeGridPlugin = $L, window.listPlugin = QL, window.FroalaEditor = eS(), window.ProgressBar = nS(), window.smartWizard = rS(), window.lozad = aS()
 	})()
 })();
+$(document).ready(function() 
+{
+	$('#logout').removeClass('active');
+	$('#partiesTab').click(function(e) 
+	{
+		e.preventDefault();
+		$(this).addClass('active');
+		$('#logout').removeClass('active');
+		$('.profileSection').hide();
+		$('.customer-list').show();
+	});
+	
+	$('#logout').click(function() 
+	{
+		$(this).addClass('active');
+		$('#partiesTab').removeClass('active');
+		// $('#partiesSection').hide();
+		// $('#profileSection').show();
+	
+		// $('#partiesSection').show();
+		// $('#profileSection').hide();
+    });
+
+    $('#customerSearch').on('keyup', function () 
+	{
+        const search = $(this).val().trim();
+
+        const user_id = $('#user_id').val();
+
+		const route = $('#route').val();
+		
+		const transactionRoute = $('#transaction-route').val();
+        $.ajax({
+            url: route,
+            method: "POST",
+			headers: {
+				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+			},
+            data: {
+                search: search,
+                user_id: user_id
+            },
+            success: function (response) 
+			{
+                const container = $('#customerListContainer');
+                container.empty();
+
+                if (response.status && response.customers.length > 0) 
+				{
+                    response.customers.forEach(function (customer) 
+					{
+                        const lastInitial = customer.name.slice(-1).toUpperCase();
+
+                        const item = `
+							<a href="${transactionRoute}/${customer.id}" class="list-group-item list-group-item-action p-3 w-100">
+                                <div class="d-flex align-items-center justify-content-between w-100">
+                                    <div class="rounded-circle me-3">
+                                        <span class="text-dark bold rounded-circle border px-2 py-1">${lastInitial}</span>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1">${customer.name}</h6>
+                                        <small class="text-muted">${customer.number}</small>
+                                    </div>
+                                    <div class="badge bg-success rounded-pill">$ 80</div>
+                                </div>
+                            </a>`;
+                        container.append(item);
+                    });
+                } 
+				else 
+				{
+                    container.html(`<div class="p-3 text-muted text-center">No customers found.</div>`);
+                }
+            },
+            error: function () 
+			{
+                $('#customerListContainer').html(
+                    '<div class="p-3 text-danger text-center">Error fetching customer data.</div>'
+                );
+            }
+        });
+    });
+
+	$('#deleteBtn').click(function(e) 
+	{
+		e.preventDefault();
+
+		Swal.fire({
+			title: 'Are you sure?',
+			text: "You won't be able to undo this!",
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#d33',
+			cancelButtonColor: '#3085d6',
+			confirmButtonText: 'Yes, delete it!'
+		}).then((result) => {
+			if (result.isConfirmed) 
+			{
+				$('#deleteForm').submit();
+			}
+		});
+	});
+
+	$('#deleteCustomerBtn').on('click', function (e) 
+	{
+		e.preventDefault();
+
+		Swal.fire({
+			title: 'Are you sure?',
+			text: "This action cannot be undone!",
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#d33',
+			cancelButtonColor: '#3085d6',
+			confirmButtonText: 'Yes, delete it!',
+			reverseButtons: true
+		}).then((result) => {
+			if (result.isConfirmed) 
+			{
+				$('#deleteCustomerForm').submit();
+			}
+		});
+	});
+
+	$('#generateReport').on('click', function () 
+	{
+		const printContents = document.getElementById('transaction-report').innerHTML;
+		const originalContents = document.body.innerHTML;
+		document.body.innerHTML = printContents;
+		window.print();
+		document.body.innerHTML = originalContents;
+		location.reload();
+	});
+});
+
 //# sourceMappingURL=app.js.map
