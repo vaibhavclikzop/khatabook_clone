@@ -4,22 +4,21 @@ namespace App\Http\Controllers\mobile;
 
 
 use Illuminate\Http\Request;
- 
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Flasher\Laravel\Facade\Flasher;
 use Jenssegers\Agent\Agent;
 use App\Models\User;
 use Illuminate\Pagination\LengthAwarePaginator;
+
 class Authentication extends Controller
 {
     public function user()
     {
-        if (!empty(session("token"))) 
-        {
+        if (!empty(session("token"))) {
             $user =   DB::table("users")->where("token", session("token"))->first();
-            if (!empty($user)) 
-            {
+            if (!empty($user)) {
                 return redirect("dashboard");
             }
         }
@@ -33,18 +32,15 @@ class Authentication extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
-        if ($validator->fails()) 
-        {
-            Flasher::addError('Error '. $validator->errors()->first());
+        if ($validator->fails()) {
+            Flasher::addError('Error ' . $validator->errors()->first());
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
         }
-        try 
-        {
+        try {
             $user =   DB::table("users")->where("email", $request->email)->where("password", $request->password)->first();
-            if (!empty($user)) 
-            {
+            if (!empty($user)) {
                 $token = bin2hex(random_bytes(16));
                 $agent = new Agent();
                 $browser = $agent->browser();
@@ -59,14 +55,10 @@ class Authentication extends Controller
                 session()->put('token', $token);
                 session()->put('user_id', $user->id);
                 session()->put('user', $user);
-            } 
-            else 
-            {
+            } else {
                 return redirect()->back()->with('error', "Incorrect Email or Password");
             }
-        } 
-        catch (\Throwable $th) 
-        {
+        } catch (\Throwable $th) {
             return redirect()->back()->with('error', $th->getMessage());
         }
         Flasher::success('success', "login successfully");
@@ -77,35 +69,31 @@ class Authentication extends Controller
     {
         $user = DB::table('users')->where('id', session()->get('user_id'))->value('my_business');
         $customers_info = DB::table('customers')
-        ->where('user_id', session()->get('user_id'))
-        ->select('id', 'name', 'number', 'type')
-        ->addSelect([
-            'latest_amount' => DB::table('transactions')
-                ->select('amount')
-                ->whereColumn('transactions.customer_id', 'customers.id')
-                ->orderBy('created_at', 'desc')
-                ->limit(1)
-        ])
-        ->paginate(10);
-
+            ->where('user_id', session()->get('user_id'))
+            ->select('id', 'name', 'number', 'type')
+            ->addSelect([
+                'latest_amount' => DB::table('transactions')
+                    ->select('amount')
+                    ->whereColumn('transactions.customer_id', 'customers.id')
+                    ->orderBy('created_at', 'desc')
+                    ->limit(1)
+            ])
+            ->paginate(10);
+ 
         $transactions = DB::table('transactions')
-        ->where('transactions.user_id', session()->get('user_id'))
-        ->get();
+            ->where('transactions.user_id', session()->get('user_id'))
+            ->get();
         $finalAmount = 0;
 
-        foreach ($transactions as $transaction) 
-        {
-            if ($transaction->type === 'take') 
-            {
+        foreach ($transactions as $transaction) {
+            if ($transaction->type === 'take') {
                 $finalAmount += $transaction->amount;
-            } 
-            elseif ($transaction->type === 'give') 
-            {
+            } elseif ($transaction->type === 'give') {
                 $finalAmount -= $transaction->amount;
             }
         }
 
-        return view("mobile.dashboard", compact('user', 'customers_info', 'finalAmount')); 
+        return view("mobile.dashboard", compact('user', 'customers_info', 'finalAmount'));
     }
 
     public function logout(Request $request)

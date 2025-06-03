@@ -52,8 +52,8 @@
                     </div>
                 </div>
             </div>
-            @include('mobile\partials\customer-list')
-            @include('mobile\partials\profile-section')
+            @include('mobile/partials/customer-list')
+            @include('mobile/partials/profile-section')
         </main>
     </div>
 
