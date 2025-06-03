@@ -510,7 +510,7 @@
                                      </a>
                                  </li>
                                  <li>
-                                     <a href="/settings">
+                                     <a href="/logout">
                                          <i class="fa fa-sign-out" aria-hidden="true"></i> <span>Logout</span>
                                      </a>
                                  </li>
