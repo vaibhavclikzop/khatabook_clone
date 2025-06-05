@@ -1,5 +1,20 @@
 @extends('mobile.layouts.main')
 @section('main-section')
+<style>
+    @media print 
+    {
+        .statics-b,
+        .cust-report-h, .adminuiux-mobile-footer
+        { 
+            display: none !important;
+        }
+ 
+        body 
+        {
+            margin: 0;
+        }
+    }
+</style>
     <div class="container-fluid py-3 px-3 mt-2">
         <div class="row statics-b">
             <div class="col-1">
@@ -60,6 +75,16 @@
 
         
         <div id="transaction-report" class="bg-white">
+            
+            <div class="only-pdf" style="margin-bottom: 20px;">
+<h3>Customer Report</h3>
+<p class="customer-name">{{ $customer->name ?? 'N/A' }}</p>
+<p class="customer-number">{{ $customer->number ?? 'N/A' }}</p>
+<p class="oldest-date">{{$oldestTransactionDate}}</p>
+<p class="latest-date">{{$latestTransactionDate}}</p>
+<p class="totalEntries">{{$totalEntries}}</p>
+<hr>
+</div>
             <!-- <div class="only-pdf" style="margin-bottom: 20px;">
                 <h3>Customer Report</h3>
                 <p><strong>Name:</strong> {{ $customer->name ?? 'N/A' }}</p>

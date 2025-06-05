@@ -65275,11 +65275,13 @@ $(document).ready(function()
 
 	$('#generateReport').on('click', function () 
 	{
+	   
 		const companyName = $('.customer-name').html(); 
 		const companyPhone = $('.customer-number').html();
 		const oldestDate = $('.oldest-date').html();
 		const latestDate = $('.latest-date').html();
 		const totalEntries = $('.totalEntries').html();
+	 
 		const additionalInfo = `
 			<div id="reportHeader" style="text-align: center; margin-bottom: 20px;">
 				<h3>${companyName}</h3>
