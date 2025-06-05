@@ -21,10 +21,10 @@
                     <div class="col-9 col-sm-12 col-md-9 col-xl p-4">
                         <h5 class="fw-bold text-theme-accent-1 mb-0 d-flex gap-3 align-items-center">
                             <i class="fa fa-book"></i><span>
-                            @php
-                                $output = isset($user) && !empty($user) ? $user : 'My business';
-                            @endphp
-                            {{$output}}
+                                @php
+                                    $output = isset($user) && !empty($user) ? $user : 'My business';
+                                @endphp
+                                {{ $output }}
                             </span>
                             <i class="fa fa-pencil" data-bs-toggle="modal" data-bs-target="#businessModal"></i>
                         </h5>
@@ -38,7 +38,10 @@
                         <div class="card adminuiux-card mb-3">
                             <div class="card-body">
                                 <h6 class="mb-0">You will give</h6>
-                                <p class="small text-success">₹  @if ($finalAmount >= 0){{$finalAmount}}  @endif</p>
+                                <p class="small text-success">₹ @if ($finalAmount >= 0)
+                                        {{ $finalAmount }}
+                                    @endif
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -46,13 +49,22 @@
                         <div class="card adminuiux-card mb-3">
                             <div class="card-body">
                                 <h6 class="mb-0">You will get</h6>
-                                <p class="small text-danger">₹  @if ($finalAmount <= 0){{$finalAmount}}  @endif</p>
+                                <p class="small text-danger">₹ @if ($finalAmount <= 0)
+                                        {{ $finalAmount }}
+                                    @endif
+                                </p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+                @foreach ($rolePermissions as $item)
+        @if ($item->permission_id == 2 && $item->view == 1)
             @include('mobile/partials/customer-list')
+
+            @endif
+            @endforeach
             @include('mobile/partials/profile-section')
         </main>
     </div>
@@ -63,7 +75,7 @@
                 <li class="nav-item">
                     <a class="nav-link gap-3 active" id="partiesTab" href="#">
                         <span>
-                            <i class="fa fa-users"></i> 
+                            <i class="fa fa-users"></i>
                             <span class="nav-text">Parties</span>
                         </span>
                     </a>
@@ -78,16 +90,18 @@
         </div>
     </footer>
 
-    <button class="btn btn-accent btn-lg btn-danger rounded-pill shadow position-fixed"
-    style="bottom: 70px; right: 20px; z-index: 999; font-size:14px;" data-bs-toggle="modal" data-bs-target="#addCustomerModal">
-        <i class="fa fa-user-plus"></i> <span> ADD CUSTOMER/SUPPLIER</span>
-    </button>
+    @foreach ($rolePermissions as $item)
+        @if ($item->permission_id == 2 && $item->view == 1)
+            <button class="btn btn-accent btn-lg btn-danger rounded-pill shadow position-fixed"
+                style="bottom: 70px; right: 20px; z-index: 999; font-size:14px;" data-bs-toggle="modal"
+                data-bs-target="#addCustomerModal">
+                <i class="fa fa-user-plus"></i> <span> ADD CUSTOMER/SUPPLIER</span>
+            </button>
+        @endif
+    @endforeach
     <div class="pagination-container">
         {{ $customers_info->links() }}
     </div>
     @include('mobile/modals/customer-modal')
     @include('mobile/modals/business-modal')
-
 @endsection
-
-

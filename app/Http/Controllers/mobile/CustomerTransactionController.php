@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Validator;
 use Flasher\Laravel\Facade\Flasher;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class CustomerTransactionController extends Controller
 {
@@ -27,6 +28,28 @@ class CustomerTransactionController extends Controller
         ->orderBy('created_at', 'desc') 
         ->value('amount');
 
+        $oldestTransaction = DB::table('transactions')
+        ->where('customer_id', $id)
+        ->orderBy('created_at', 'asc')
+        ->first();
+
+        $oldestTransactionDate = $oldestTransaction
+            ? Carbon::parse($oldestTransaction->created_at)->format('d-M-Y')
+            : null;
+
+        $latestTransaction = DB::table('transactions')
+            ->where('customer_id', $id)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        $latestTransactionDate = $latestTransaction
+            ? Carbon::parse($latestTransaction->created_at)->format('d-M-Y')
+            : null;
+
+        $totalEntries = DB::table('transactions')
+        ->where('customer_id', $id)
+        ->count();
+
         $finalAmount = 0;
 
         foreach ($transactions as $transaction) 
@@ -41,7 +64,7 @@ class CustomerTransactionController extends Controller
             }
         }
 
-        return view('mobile/customer-transaction/transaction', compact('transactions', 'customer', 'latestAmount', 'finalAmount'));
+        return view('mobile/customer-transaction/transaction', compact('transactions', 'customer', 'latestAmount', 'finalAmount', 'oldestTransactionDate', 'latestTransactionDate', 'totalEntries'));
     }
 
     public function gave_money(Request $request)

@@ -463,33 +463,43 @@
 
                          <li>
                              <ul>
-                                 <li class="submenu">
-                                     <a href="javascript:void(0);" class="">
-                                         <i class="fa fa-users" aria-hidden="true"></i>
-                                         <span>User Management</span>
 
-                                         <span class="menu-arrow"></span>
-                                     </a>
-                                     <ul>
-                                         <li><a href="{{ route('user-role') }}">User Role</a></li>
-                                         <li><a href="{{ route('users') }}">Users</a></li>
 
-                                     </ul>
-                                 </li>
-                                 <li class="submenu">
-                                     <a href="javascript:void(0);" class="">
+                                 @foreach ($rolePermissions as $item)
+                                     @if ($item->permission_id == 1 && $item->view == 1)
+                                         <li class="submenu">
+                                             <a href="javascript:void(0);" class="">
+                                                 <i class="fa fa-users" aria-hidden="true"></i>
+                                                 <span>User Management</span>
 
-                                         <i class=" ti   ti-layout-grid"></i>
-                                         <span>Masters</span>
+                                                 <span class="menu-arrow"></span>
+                                             </a>
+                                             <ul>
+                                                 <li><a href="{{ route('user-role') }}">User Role</a></li>
+                                                 <li><a href="{{ route('users') }}">Users</a></li>
 
-                                         <span class="menu-arrow"></span>
-                                     </a>
-                                     <ul>
-                                         <li><a href="{{ route('customers') }}">Customers</a></li>
-                                         <li><a href="{{ route('suppliers') }}">Supplier</a></li>
+                                             </ul>
+                                         </li>
+                                     @endif
 
-                                     </ul>
-                                 </li>
+                                     @if ($item->permission_id == 2 && $item->view == 1)
+                                         <li class="submenu">
+                                             <a href="javascript:void(0);" class="">
+
+                                                 <i class=" ti   ti-layout-grid"></i>
+                                                 <span>Masters</span>
+
+                                                 <span class="menu-arrow"></span>
+                                             </a>
+                                             <ul>
+                                                 <li><a href="{{ route('customers') }}">Customers</a></li>
+                                                 <li><a href="{{ route('suppliers') }}">Supplier</a></li>
+
+                                             </ul>
+                                         </li>
+                                     @endif
+                                 @endforeach
+
 
                              </ul>
 
@@ -499,21 +509,36 @@
                          <li>
                              <ul>
 
-                                 <li>
-                                     <a href="{{ route('transactions') }}">
-                                         <i class="fa fa-user" aria-hidden="true"></i><span>Transactions</span>
-                                     </a>
-                                 </li>
+                                 @foreach ($rolePermissions as $item)
+                                     @if ($item->permission_id == 3 && $item->view == 1)
+                                         <li>
+                                             <a href="{{ route('transactions') }}">
+                                                 <i class="fa fa-user"
+                                                     aria-hidden="true"></i><span>Transactions</span>
+                                             </a>
+                                         </li>
+                                     @endif
+                                     @if ($item->permission_id == 4 && $item->view == 1)
+                                         <li>
+                                             <a href="{{ route('settings') }}">
+                                                 <i class="fa fa-gear" aria-hidden="true"></i><span>Settings</span>
+                                             </a>
+                                         </li>
+                                     @endif
+                                 @endforeach
+
+
                                  <li>
                                      <a href="{{ route('profile') }}">
                                          <i class="fa fa-user" aria-hidden="true"></i><span>Profile</span>
                                      </a>
                                  </li>
-                                 <li>
-                                     <a href="{{ route('settings') }}">
-                                         <i class="fa fa-gear" aria-hidden="true"></i><span>Settings</span>
-                                     </a>
-                                 </li>
+
+
+
+
+
+
                                  <li>
                                      <a href="{{ route('Logout') }}">
                                          <i class="fa fa-sign-out" aria-hidden="true"></i> <span>Logout</span>
