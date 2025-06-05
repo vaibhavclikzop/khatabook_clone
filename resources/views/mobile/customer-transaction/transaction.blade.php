@@ -34,7 +34,7 @@
                         </p>
                     </div>
                     <div class="col-2">
-                        <i class="fa fa-phone" data-bs-toggle="tooltip" data-bs-title="{{$customer->number}}"></i>
+                        <a href="tel:+{{$customer->number}}"><i class="fa fa-phone"></i></a>
                     </div>
                 </div>
             </div>
@@ -46,7 +46,7 @@
                                 <h5>You will @if ($finalAmount >= 0) give @else get @endif</h5>
                             </div>
                             <div class="col-4 text-end">
-                                <h5 class="text-success">₹ {{isset($finalAmount) && !empty($finalAmount) ? $finalAmount : '0.00'}}</h5>
+                                <h5 class="@if ($finalAmount >= 0) text-success @else text-danger @endif">₹ {{isset($finalAmount) && !empty($finalAmount) ? $finalAmount : '0.00'}}</h5>
                             </div>
                         </div>
                     </div>
@@ -55,9 +55,11 @@
         </div>
 
         <div class="row text-center mt-3">
-            <div class="col-4">
+           <div class="col-4">
                 <span id="generateReport" style="cursor: pointer;">
-                    <i class="fa fa-file"></i><br>Report
+                    <a href="{{ route('generate.report', ['id' => $customer->id]) }}" class="text-decoration-none">
+                        <i class="fa fa-file"></i><br>Report
+                    </a>
                 </span>
             </div>
             <div class="col-4">
@@ -74,17 +76,17 @@
         </div>
 
         
-        <div id="transaction-report" class="bg-white">
+        <!-- <div id="transaction-report" class="bg-white"> -->
             
-            <div class="only-pdf" style="margin-bottom: 20px;">
-<h3>Customer Report</h3>
-<p class="customer-name">{{ $customer->name ?? 'N/A' }}</p>
-<p class="customer-number">{{ $customer->number ?? 'N/A' }}</p>
-<p class="oldest-date">{{$oldestTransactionDate}}</p>
-<p class="latest-date">{{$latestTransactionDate}}</p>
-<p class="totalEntries">{{$totalEntries}}</p>
-<hr>
-</div>
+            <!-- <div class="only-pdf" style="margin-bottom: 20px;">
+                <h3>Customer Report</h3>
+                <p class="customer-name">{{ $customer->name ?? 'N/A' }}</p>
+                <p class="customer-number">{{ $customer->number ?? 'N/A' }}</p>
+                <p class="oldest-date">{{$oldestTransactionDate}}</p>
+                <p class="latest-date">{{$latestTransactionDate}}</p>
+                <p class="totalEntries">{{$totalEntries}}</p>
+                <hr>
+            </div> -->
             <!-- <div class="only-pdf" style="margin-bottom: 20px;">
                 <h3>Customer Report</h3>
                 <p><strong>Name:</strong> {{ $customer->name ?? 'N/A' }}</p>
@@ -92,7 +94,7 @@
                 <hr>
             </div> -->
             @include('mobile.partials.transactions-list')
-        </div>
+        <!-- </div> -->
 
         <footer class="adminuiux-mobile-footer hide-on-scrolldown style-1">
             <div class="container">

@@ -67,6 +67,62 @@ class CustomerTransactionController extends Controller
         return view('mobile/customer-transaction/transaction', compact('transactions', 'customer', 'latestAmount', 'finalAmount', 'oldestTransactionDate', 'latestTransactionDate', 'totalEntries'));
     }
 
+    public function generate_report($id)
+    {
+        $transactions = DB::table('transactions')
+        ->join('customers', 'customers.id', '=', 'transactions.customer_id')
+        ->where('transactions.customer_id', $id)
+        ->select('transactions.id as t_id', 'transactions.type as t_type', 'transactions.*', 'customers.*')
+        ->paginate(10);
+
+        $customer = DB::table('customers')
+        ->where('id',$id)
+        ->first();
+
+       $latestAmount = DB::table('transactions')
+        ->where('customer_id', $id)
+        ->orderBy('created_at', 'desc') 
+        ->value('amount');
+
+        $oldestTransaction = DB::table('transactions')
+        ->where('customer_id', $id)
+        ->orderBy('created_at', 'asc')
+        ->first();
+
+        $oldestTransactionDate = $oldestTransaction
+            ? Carbon::parse($oldestTransaction->created_at)->format('d-M-Y')
+            : null;
+
+        $latestTransaction = DB::table('transactions')
+            ->where('customer_id', $id)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        $latestTransactionDate = $latestTransaction
+            ? Carbon::parse($latestTransaction->created_at)->format('d-M-Y')
+            : null;
+
+        $totalEntries = DB::table('transactions')
+        ->where('customer_id', $id)
+        ->count();
+
+        $finalAmount = 0;
+
+        foreach ($transactions as $transaction) 
+        {
+            if ($transaction->t_type === 'take') 
+            {
+                $finalAmount += $transaction->amount;
+            } 
+            elseif ($transaction->t_type === 'give') 
+            {
+                $finalAmount -= $transaction->amount;
+            }
+        }
+
+        return view('mobile/partials/pdf', compact('transactions', 'customer', 'latestAmount', 'finalAmount', 'oldestTransactionDate', 'latestTransactionDate', 'totalEntries'));
+    }
+
     public function gave_money(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -145,7 +201,7 @@ class CustomerTransactionController extends Controller
             'amount'           => 'required|numeric|min:0.01',
             'description'      => 'nullable|string',
             'transaction_date' => 'nullable|date',
-            'attachment'       => 'nullable|file|mimes:jpeg,jpg,png,pdf,xls,xlsx|max:5120',
+            'attachment'       => 'nullable|file|mimes:jpeg,jpg,png',
         ]);
 
         $transaction = Transaction::findOrFail($id);

@@ -86,8 +86,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('transactions',[TransactionController::class,'transactions'])->name('transactions');
         Route::get('view-transactions/{id}',[TransactionController::class,'viewTransactions'])->name('viewTransaction');
         Route::post('edit-transaction',[TransactionController::class,'editTransaction'])->name('edit_transaction');
-      Route::delete('/transaction/{id}', [TransactionController::class, 'deleteTransaction'])->name('transaction.delete');
-       
+        Route::delete('/transaction/{id}', [TransactionController::class, 'deleteTransaction'])->name('transaction.delete');
     });
 
 });
@@ -98,7 +97,6 @@ Route::middleware(['verify_user'])->group(function () {
     Route::post('/my-business', [UserController::class, 'my_business'])->name('user.business');
     Route::post('/filter-customers', [UserController::class, 'filter_customer'])->name('user.filter');
     Route::post('/add-customers', [UserController::class, 'add_customers'])->name('add.customers');
-    Route::get('logout', [Authentication::class, 'logout'])->name('Logout');
 
     Route::get('/transaction/{id}', [CustomerTransactionController::class, 'view_transaction'])->name('view.transaction');
     Route::get('/transaction-detail/{id}', [CustomerTransactionController::class, 'view_transaction_detail'])->name('view.transaction_detail');
@@ -107,4 +105,5 @@ Route::middleware(['verify_user'])->group(function () {
     Route::put('/customer/{id}', [CustomerTransactionController::class, 'customer_update'])->name('customer.update');
     Route::delete('/customer/delete/{id}', [CustomerTransactionController::class, 'customer_delete'])->name('customer.delete');
     Route::post('/gave-money', [CustomerTransactionController::class, 'gave_money'])->name('gave.money');
+    Route::get('/generate-report/{id}', [CustomerTransactionController::class, 'generate_report'])->name('generate.report');
 });

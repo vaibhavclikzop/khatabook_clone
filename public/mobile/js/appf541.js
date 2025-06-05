@@ -65273,35 +65273,36 @@ $(document).ready(function()
 		});
 	});
 
-	$('#generateReport').on('click', function () 
-	{
+
+	// $('#generateReport').on('click', function () 
+	// {
 	   
-		const companyName = $('.customer-name').html(); 
-		const companyPhone = $('.customer-number').html();
-		const oldestDate = $('.oldest-date').html();
-		const latestDate = $('.latest-date').html();
-		const totalEntries = $('.totalEntries').html();
+	// 	const companyName = $('.customer-name').html(); 
+	// 	const companyPhone = $('.customer-number').html();
+	// 	const oldestDate = $('.oldest-date').html();
+	// 	const latestDate = $('.latest-date').html();
+	// 	const totalEntries = $('.totalEntries').html();
 	 
-		const additionalInfo = `
-			<div id="reportHeader" style="text-align: center; margin-bottom: 20px;">
-				<h3>${companyName}</h3>
-				<p style="margin:10px; !important;"><strong>Phone Number:</strong> ${companyPhone}</p>
-				<p style="margin:10px; !important;">(${oldestDate} - ${latestDate})</p>
-			</div>
-			<p style="margin-left: 20px !important;">No. of Entries: ${totalEntries} (All)</p>
-		`;
-		const reportDiv = document.getElementById('transaction-report');
-		const originalContent = reportDiv.innerHTML;
-		reportDiv.innerHTML = additionalInfo + originalContent;
-		window.print();
-		reportDiv.innerHTML = originalContent;
-		const printContents = document.getElementById('transaction-report').innerHTML;
-		const originalContents = document.body.innerHTML;
-		document.body.innerHTML = printContents;
-		window.print();
-		document.body.innerHTML = originalContents;
-		location.reload();
-	});
+	// 	const additionalInfo = `
+	// 		<div id="reportHeader" style="text-align: center; margin-bottom: 20px;">
+	// 			<h3>${companyName}</h3>
+	// 			<p style="margin:10px; !important;"><strong>Phone Number:</strong> ${companyPhone}</p>
+	// 			<p style="margin:10px; !important;">(${oldestDate} - ${latestDate})</p>
+	// 		</div>
+	// 		<p style="margin-left: 20px !important;">No. of Entries: ${totalEntries} (All)</p>
+	// 	`;
+	// 	const reportDiv = document.getElementById('transaction-report');
+	// 	const originalContent = reportDiv.innerHTML;
+	// 	reportDiv.innerHTML = additionalInfo + originalContent;
+	// 	window.print();
+	// 	reportDiv.innerHTML = originalContent;
+	// 	const printContents = document.getElementById('transaction-report').innerHTML;
+	// 	const originalContents = document.body.innerHTML;
+	// 	document.body.innerHTML = printContents;
+	// 	window.print();
+	// 	document.body.innerHTML = originalContents;
+	// 	location.reload();
+	// });
 });
 
 //# sourceMappingURL=app.js.map
