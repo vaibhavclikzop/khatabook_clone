@@ -114,7 +114,7 @@
                                 <td>{{ \Carbon\Carbon::parse($transaction->transaction_date)->format('d-M-Y') }}</td>
                                 <td>
                                     @if (!empty($transaction->attachment))
-                                        <a href="{{ asset('storage/attachments/' . basename($transaction->attachment)) }}" target="_blank">
+                                        <a href="{{ asset('attachments/' . basename($transaction->attachment)) }}" target="_blank">
                                             attachment
                                         </a>
                                     @else

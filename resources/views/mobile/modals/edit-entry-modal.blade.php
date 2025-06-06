@@ -30,7 +30,7 @@
 
                             @php
                                 $extension = pathinfo($transaction->attachment, PATHINFO_EXTENSION);
-                                $fileUrl = asset('storage/' . $transaction->attachment);
+                                $fileUrl = asset('attachments/' . $transaction->attachment);
                             @endphp
 
                             @if(in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'gif']))

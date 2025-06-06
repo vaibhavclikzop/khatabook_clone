@@ -79,12 +79,7 @@
                                         </div> -->
                                     </div>
                                    <button type="submit" class="btn btn-lg btn-theme w-100 mb-4"><i class="fa-solid fa-right-to-bracket"></i> Login</button>
-                                </form>
-                                <footer class="adminuiux-footer mt-auto position-fixed bottom-0">
-                                    <div class="container-fluid text-center">
-                                        <span class="small">Copyright @2025, <a href="https://clikzop.com/" target="_blank">{{ $setting->company_name ?? 'Company Name' }}</span>
-                                    </div>
-                                </footer>                               
+                                </form>                              
                             </div>
                         </div>
                     </div>

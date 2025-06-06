@@ -32,6 +32,9 @@ Route::get('/Clear', function () {
 
     $clearconfig = Artisan::call('config:cache');
     echo "Config cleared<br>";
+    
+    $linkstorage = Artisan::call('storage:link');
+    echo "Storage linked<br>";
 });
 
 Route::get('reset-software/{key}', [ResetSoftware::class, 'ResetSoftware'])->name('reset-software');

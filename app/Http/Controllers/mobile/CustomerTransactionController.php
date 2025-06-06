@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Flasher\Laravel\Facade\Flasher;
 use App\Models\Transaction;
-use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use TCPDF;
 
@@ -153,7 +152,7 @@ class CustomerTransactionController extends Controller
             $transactionRows .= '<tr>'
                 . '<td style="line-height:30px !important;">' . Carbon::parse($transaction->transaction_date)->format('d-M-Y') . '</td>'
                 . '<td style="line-height:30px !important;">' . ($transaction->attachment 
-                    ? '<a href="' . asset('storage/attachments/' . basename($transaction->attachment)) . '" target="_blank">attachment</a>' 
+                    ? '<a href="' . asset('attachments/' . basename($transaction->attachment)) . '" target="_blank">attachment</a>' 
                     : 'No Attachment') . '</td>'
                 . '<td style="line-height:30px !important;">' . ($transaction->type === 'give' ? number_format($amount, 2) : '') . '</td>'
                 . '<td style="line-height:30px !important;">' . ($transaction->type === 'take' ? number_format($amount, 2) : '') . '</td>'
@@ -271,9 +270,11 @@ class CustomerTransactionController extends Controller
             DB::beginTransaction();
 
             $filePath = null;
+            
             if ($request->hasFile('attachment')) 
             {
-                $filePath = $request->file('attachment')->store('attachments', 'public');
+                $filePath = time() . '.' . $request->file('attachment')->extension();
+                $request->file('attachment')->move('attachments', $filePath);
             }
 
             DB::table('transactions')->insert([
@@ -335,11 +336,8 @@ class CustomerTransactionController extends Controller
         $transaction->transaction_date = $request->transaction_date;
         if ($request->hasFile('attachment')) 
         {
-            if ($transaction->attachment && file_exists(storage_path('app/public/' . $transaction->attachment))) 
-            {
-                unlink(storage_path('app/public/' . $transaction->attachment));
-            }
-            $filePath = $request->file('attachment')->store('attachments', 'public');
+            $filePath = time() . '.' . $request->file('attachment')->extension();
+            $request->file('attachment')->move('attachments', $filePath);
             $transaction->attachment = $filePath;
         }
 
