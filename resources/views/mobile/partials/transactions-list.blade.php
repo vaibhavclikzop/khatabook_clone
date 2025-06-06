@@ -15,7 +15,7 @@
                                 <span class="text-dark bold rounded-circle border px-2 py-1">{{ strtoupper(substr($transaction->name,0, 1));}}</span>
                             </div>
                             <div class="flex-grow-1">
-                                <h6 class="mb-1">{{$transaction->formatted_date = \Carbon\Carbon::parse($transaction->created_at)->format('d M y - h:ia');}}</h6>
+                                <h6 class="mb-1">{{$transaction->formatted_date = \Carbon\Carbon::parse($transaction->transaction_date)->format('d M y - h:ia');}}</h6>
                                 <small class="text-muted">₹ {{$transaction->amount}}</small>
                             </div>
                             <div class="transactions">

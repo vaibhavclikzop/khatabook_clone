@@ -59,8 +59,8 @@
                 </div>
             </div>
 
-                @foreach ($rolePermissions as $item)
-        @if ($item->permission_id == 2 && $item->view == 1)
+            @foreach ($rolePermissions as $item)
+            @if ($item->permission_id == 2 && $item->view == 1)
             @include('mobile/partials/customer-list')
 
             @endif

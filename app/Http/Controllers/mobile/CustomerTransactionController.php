@@ -8,6 +8,7 @@ use Flasher\Laravel\Facade\Flasher;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
+use TCPDF;
 
 class CustomerTransactionController extends Controller
 {
@@ -121,6 +122,130 @@ class CustomerTransactionController extends Controller
         }
 
         return view('mobile/partials/pdf', compact('transactions', 'customer', 'latestAmount', 'finalAmount', 'oldestTransactionDate', 'latestTransactionDate', 'totalEntries'));
+    }
+    
+    public function generate_pdf_report($id)
+    {
+        $customer = DB::table('customers')->find($id);
+        if (!$customer) 
+        {
+            return response()->json(['error' => 'Customer not found'], 404);
+        }
+
+        $transactions = DB::table('transactions')
+        ->where('customer_id', $id)
+        ->orderBy('created_at', 'asc')
+        ->get(['id', 'transaction_date', 'type', 'amount', 'attachment', 'created_at']);
+
+        $totalEntries = $transactions->count();
+        $totalDebit = $transactions->where('type', 'give')->sum('amount');
+        $totalCredit = $transactions->where('type', 'give')->sum('amount');
+        $runningBalance = 0;
+        $transactionRows = '';
+        $oldestTransactionDate = $transactions->isNotEmpty() ? Carbon::parse($transactions->last()->transaction_date)->format('d-M-Y') : 'N/A';
+        $latestTransactionDate = $transactions->isNotEmpty() ? Carbon::parse($transactions->first()->transaction_date)->format('d-M-Y') : 'N/A';
+
+        foreach ($transactions as $transaction) 
+        {
+            $amount = $transaction->amount;
+            $runningBalance += $transaction->type === 'give' ? $amount : -$amount;
+
+            $transactionRows .= '<tr>'
+                . '<td style="line-height:30px !important;">' . Carbon::parse($transaction->transaction_date)->format('d-M-Y') . '</td>'
+                . '<td style="line-height:30px !important;">' . ($transaction->attachment 
+                    ? '<a href="' . asset('storage/attachments/' . basename($transaction->attachment)) . '" target="_blank">attachment</a>' 
+                    : 'No Attachment') . '</td>'
+                . '<td style="line-height:30px !important;">' . ($transaction->type === 'give' ? number_format($amount, 2) : '') . '</td>'
+                . '<td style="line-height:30px !important;">' . ($transaction->type === 'take' ? number_format($amount, 2) : '') . '</td>'
+                . '<td style="line-height:30px !important;">₹' . number_format($runningBalance, 2) . '</td>'
+                . '</tr>';
+                
+        }
+
+        $finalAmount = $runningBalance;
+        $finalAmountColor = $finalAmount < 0 ? 'green' : 'red';
+
+        $html = <<<HTML
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 15px;
+            }
+            .header {
+                background-color:#007bff;
+                color: white;
+                padding: 15px;
+                text-align: center;
+                margin-bottom: 15px;
+                border-radius: 5px;
+            }
+            .summary-table {
+                width: 100%;
+                margin-bottom: 15px;
+                border-collapse: collapse;
+                text-align: center;
+            }
+            .summary-table td {
+                padding: 8px;
+                border: none;
+            }
+            .data-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 15px;
+            }
+            .data-table th, .data-table td {
+                padding: 10px;
+                text-align: center;
+                border: 1px solid #ddd;
+            }
+            .data-table th {
+                background-color: #f8f9fa;
+            }
+        </style>
+
+        <div class="header" style="line-height:8px !important;">
+            <h2>{$customer->name}</h2>
+            <p style="line-height:10px !important;">Phone Number: {$customer->number}</p>
+            <p style="line-height:10px !important;">({$oldestTransactionDate} - {$latestTransactionDate})</p>
+        </div>
+        <table class="summary-table">
+            <br><br>
+            <tr>
+                <td><strong>Opening Balance:</strong><br><br> ₹0.00</td>
+                <td><strong>Total Debit:</strong><br><br> ₹{$totalDebit}</td>
+                <td><strong>Total Credit:</strong><br><br> ₹{$totalCredit}</td>
+                <td><strong>Net Balance:</strong><br><br> <span style="color:{$finalAmountColor}">₹{$finalAmount}</span></td>
+            </tr>
+        </table><br>
+
+        <p><strong>Total Entries:</strong> {$totalEntries}</p>
+
+        <table class="data-table">
+            <thead>
+                <tr style="line-height:20px !important;">
+                    <th style="line-height:30px !important;">Date</th>
+                    <th style="line-height:30px !important;">Details</th>
+                    <th style="line-height:30px !important;">Debit (₹)</th>
+                    <th style="line-height:30px !important;">Credit (₹)</th>
+                    <th style="line-height:30px !important;">Balance (₹)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {$transactionRows}
+            </tbody>
+        </table>
+    HTML;
+
+        $pdf = new TCPDF();
+        $pdf->SetPrintHeader(false);
+        $pdf->SetPrintFooter(false);
+        $pdf->AddPage();
+        $pdf->SetFont('dejavusans', '', 10);
+        $pdf->writeHTML($html, true, false, true, false, '');
+
+        return $pdf->Output('statement.pdf', 'I');
     }
 
     public function gave_money(Request $request)

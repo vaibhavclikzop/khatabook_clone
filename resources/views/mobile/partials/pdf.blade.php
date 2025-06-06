@@ -69,11 +69,11 @@
                 </div>
                 <div class="col">
                     <p>Total Debit</p>
-                    <h6>₹{{ number_format($transactions->where('t_type', 'take')->sum('amount'), 2) }}</h6>
+                    <h6>₹{{ number_format($transactions->where('t_type', 'give')->sum('amount'), 2) }}</h6>
                 </div>
                 <div class="col">
                     <p>Total Credit</p>
-                    <h6>₹{{ number_format($transactions->where('t_type', 'give')->sum('amount'), 2) }}</h6>
+                    <h6>₹{{ number_format($transactions->where('t_type', 'take')->sum('amount'), 2) }}</h6>
                 </div>
                 <div class="col">
                     <p>Net Balance</p>
@@ -115,14 +115,14 @@
                                 <td>
                                     @if (!empty($transaction->attachment))
                                         <a href="{{ asset('storage/attachments/' . basename($transaction->attachment)) }}" target="_blank">
-                                            <img src="{{ asset('storage/attachments/' . basename($transaction->attachment)) }}" alt="Attachment">
+                                            attachment
                                         </a>
                                     @else
                                         <span>No Attachment</span>
                                     @endif
                                 </td>
-                                <td>{{ $transaction->t_type === 'take' ? number_format($transaction->amount, 2) : '' }}</td>
                                 <td>{{ $transaction->t_type === 'give' ? number_format($transaction->amount, 2) : '' }}</td>
+                                <td>{{ $transaction->t_type === 'take' ? number_format($transaction->amount, 2) : '' }}</td>
                                 <td>₹{{ number_format($runningBalance, 2) }}</td>
                             </tr>
                         @endforeach
@@ -132,7 +132,7 @@
         </div>
         <div class="card-footer text-center">
             <div class="text-end mb-3 no-print">
-                <button onclick="window.print()" class="btn btn-primary">Print Statement</button>
+                <a href="{{ route('generate.pdf.report', ['id' => $customer->id]) }}" target="_blank" class="text-decoration-none"> Print Statement </a>
             </div>
         </div>
     </div>
