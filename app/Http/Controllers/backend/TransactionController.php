@@ -22,24 +22,22 @@ class TransactionController extends Controller
 
 
         $data = $request->validated();
-        
 
+        $file = "";
         if ($request->hasFile('file')) {
-            $file = $request->file('file');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('uploads/transactions'), $filename);
-            $data['file'] = 'uploads/transactions/' . $filename;
+            $file = time() . '.' . $request->file('file')->extension();
+            $request->file('file')->move('attachments', $file);
         }
 
-
         $data['user_id'] = $request->user->id;
+        $data['file'] = $file;
 
 
-
+DB::beginTransaction();
 
         try {
 
-            DB::beginTransaction();
+            
 
             $transaction = Transaction::create($data);
 
@@ -103,17 +101,13 @@ class TransactionController extends Controller
 
     public function editTransaction(TransactionRequest $request)
     {
-
-
         $transaction = Transaction::where('id', $request->transaction_id)->first();
 
+             $file = "";
         if ($request->hasFile('file')) {
-            $file = $request->file('file');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('uploads/transactions'), $filename);
-            $transaction->file = 'uploads/transactions/' . $filename;
-        }
-
+            $file = time() . '.' . $request->file('file')->extension();
+            $request->file('file')->move('attachments', $file);
+        } 
 
         if ($transaction) {
 

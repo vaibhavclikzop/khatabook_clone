@@ -59,8 +59,8 @@
 
                             <td>{{ $row->description }}</td>
                             <td>
-                                @if (!empty($row->file) && file_exists(public_path($row->file)))
-                                    <img src="{{ asset($row->file) }}" alt="Transaction Image" width="50">
+                                @if (!empty($row->file))
+                                    <img src="{{ asset("attachments/".$row->file) }}" alt="Transaction Image" width="50">
                                 @else
                                     <img src="{{ asset('images/no_image.jpg') }}" alt="No Image" width="50">
                                 @endif
