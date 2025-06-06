@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Statement</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         body {
             background-color: #f8f9fa;
@@ -49,7 +50,12 @@
 </head>
 <body>
 <div class="container-fluid mt-4">
-    <div class="card">
+    <div class="col-12 no-print">
+        <a href="{{ route('view.transaction', ['id' => $customer->id]) }}">
+            <i class="fa fa-arrow-left fs-3"></i>
+        </a>
+    </div>
+    <div class="card mt-3">
         <div class="card-header text-center">
             <h5>{{ $customer->name }}</h5>
             <p class="mb-0">Phone Number: {{ $customer->number }}</p>
@@ -89,13 +95,27 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @php
+                            $runningBalance = $oldestTransaction->amount ?? 0;
+                        @endphp
+
                         @foreach ($transactions as $transaction)
+                            @php
+                                if ($transaction->t_type === 'take') 
+                                {
+                                    $runningBalance -= $transaction->amount;
+                                } 
+                                elseif ($transaction->t_type === 'give') 
+                                {
+                                    $runningBalance += $transaction->amount;
+                                }
+                            @endphp
                             <tr>
-                                <td>{{ \Carbon\Carbon::parse($transaction->created_at)->format('d-M-Y') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($transaction->transaction_date)->format('d-M-Y') }}</td>
                                 <td>
                                     @if (!empty($transaction->attachment))
-                                        <a href="{{ asset('uploads/transactions/' . basename($transaction->attachment)) }}" target="_blank">
-                                            <img src="{{ asset('uploads/transactions/' . basename($transaction->attachment)) }}" alt="Attachment">
+                                        <a href="{{ asset('storage/attachments/' . basename($transaction->attachment)) }}" target="_blank">
+                                            <img src="{{ asset('storage/attachments/' . basename($transaction->attachment)) }}" alt="Attachment">
                                         </a>
                                     @else
                                         <span>No Attachment</span>
@@ -103,7 +123,7 @@
                                 </td>
                                 <td>{{ $transaction->t_type === 'take' ? number_format($transaction->amount, 2) : '' }}</td>
                                 <td>{{ $transaction->t_type === 'give' ? number_format($transaction->amount, 2) : '' }}</td>
-                                 <td>₹{{ number_format($finalAmount, 2) }}</td>
+                                <td>₹{{ number_format($runningBalance, 2) }}</td>
                             </tr>
                         @endforeach
                     </tbody>

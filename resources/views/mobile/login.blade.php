@@ -82,7 +82,7 @@
                                 </form>
                                 <footer class="adminuiux-footer mt-auto position-fixed bottom-0">
                                     <div class="container-fluid text-center">
-                                        <span class="small">Copyright @2025, <a href="https://adminuiux.com/" target="_blank">{{ $setting->company_name ?? 'Company Name' }}</span>
+                                        <span class="small">Copyright @2025, <a href="https://clikzop.com/" target="_blank">{{ $setting->company_name ?? 'Company Name' }}</span>
                                     </div>
                                 </footer>                               
                             </div>

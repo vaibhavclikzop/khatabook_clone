@@ -23,7 +23,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="attachment" class="form-label">Upload File (Image, PDF, Excel)</label>
+                        <label for="attachment" class="form-label">Upload Image</label>
                         <input type="file" class="form-control" id="attachment" name="attachment" accept=".jpg,.jpeg,.png,.pdf,.xls,.xlsx">
                     </div>
                     
