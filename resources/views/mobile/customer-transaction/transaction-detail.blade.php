@@ -24,7 +24,7 @@
                                 <p class="mb-1 ms-5 text-muted">{{$transaction->formatted_date = \Carbon\Carbon::parse($transaction->transaction_date)->format('d M y - h:ia');}}</p> 
                             </div>
                             <div class="col-4">
-                                <h5 class="text-success text-end">₹ {{isset($transaction->amount) && !empty($transaction->amount) ? $transaction->amount : '0.00'}}</h5>
+                                <h5 class="{{ isset($transaction->type) && $transaction->type == 'give' ? 'text-danger' : ' text-success' }} text-end">{{ isset($transaction->type) && $transaction->type == 'give' ? '-' : '' }} ₹ {{isset($transaction->amount) && !empty($transaction->amount) ? $transaction->amount : '0.00'}}</h5>
                             </div>
                         </div>
                     </div>

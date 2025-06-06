@@ -46,7 +46,9 @@
                                 <h5>You will @if ($finalAmount >= 0) give @else get @endif</h5>
                             </div>
                             <div class="col-4 text-end">
-                                <h5 class="@if ($finalAmount >= 0) text-success @else text-danger @endif">₹ {{isset($finalAmount) && !empty($finalAmount) ? number_format(str_replace('-', '',$finalAmount), 2) : '0.00'}}</h5>
+                                <h5 class="{{ $finalAmount >= 0 ? 'text-success' : 'text-danger' }}">
+                                    {{ $finalAmount >= 0 ? '' : '-' }} ₹ {{ number_format(abs($finalAmount ?? 0), 2) }}
+                                </h5>
                             </div>
                         </div>
                     </div>

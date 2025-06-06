@@ -78,7 +78,7 @@
                 <div class="col">
                     <p>Net Balance</p>
                     <h6 class="{{ $finalAmount < 0 ? 'text-danger' : 'text-success' }}">
-                        ₹{{ number_format(str_replace('-', '', abs($finalAmount)), 2) }}
+                        {{ $finalAmount < 0 ? '-' : '' }} ₹{{ number_format(str_replace('-', '', abs($finalAmount)), 2) }}
                     </h6>
                 </div>
             </div>

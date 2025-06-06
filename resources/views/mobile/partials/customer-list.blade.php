@@ -39,8 +39,10 @@
                                         <small class="text-muted">{{$customer->number}}</small><br>
                                         <small class="text-muted">({{$customer->type}})</small>
                                     </div>
-                                    <div class="badge bg-success rounded-pill">
-                                        ₹ {{ $customer->latest_amount ?? '0.00' }}
+                                    <div class="badge 
+                                        {{ $customer->latest_transaction_type === 'give' ? 'bg-danger' : 'bg-success' }} 
+                                        rounded-pill">
+                                        {{ $customer->latest_transaction_type === 'give' ? '-' : '' }} ₹ {{ number_format($customer->latest_amount ?? 0.00, 2) }}
                                     </div>
                                 </div>
                             </a>

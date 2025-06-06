@@ -68,6 +68,7 @@ class Authentication extends Controller
     public function showDashboard()
     {
         $user = DB::table('users')->where('id', session()->get('user_id'))->value('my_business');
+
         $customers_info = DB::table('customers')
             ->where('user_id', session()->get('user_id'))
             ->select('id', 'name', 'number', 'type')
@@ -76,24 +77,32 @@ class Authentication extends Controller
                     ->select('amount')
                     ->whereColumn('transactions.customer_id', 'customers.id')
                     ->orderBy('created_at', 'desc')
-                    ->limit(1)
+                    ->limit(1),
+                'latest_transaction_type' => DB::table('transactions')
+                    ->select('type')
+                    ->whereColumn('transactions.customer_id', 'customers.id')
+                    ->orderBy('created_at', 'desc')
+                    ->limit(1),
             ])
             ->paginate(10);
- 
+
         $transactions = DB::table('transactions')
             ->where('transactions.user_id', session()->get('user_id'))
             ->get();
-        $finalAmount = 0;
 
-        foreach ($transactions as $transaction) {
-            if ($transaction->type === 'take') {
+        $finalAmount = 0;
+        foreach ($transactions as $transaction) 
+        {
+            if ($transaction->type === 'take') 
+            {
                 $finalAmount += $transaction->amount;
-            } elseif ($transaction->type === 'give') {
+            } 
+            elseif ($transaction->type === 'give') 
+            {
                 $finalAmount -= $transaction->amount;
             }
         }
-
-        return view("mobile.dashboard", compact('user', 'customers_info', 'finalAmount'));
+        return view('mobile.dashboard', compact('user', 'customers_info', 'finalAmount'));
     }
 
     public function logout(Request $request)

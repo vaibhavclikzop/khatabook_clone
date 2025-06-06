@@ -26,7 +26,7 @@
                                         You Got
                                     @endif
                                     </span>
-                                    <div class="{{ isset($transaction->t_type) && $transaction->t_type == 'give' ? 'text-danger' : 'text-success' }} rounded-pill fs-6">₹ {{$transaction->amount}}</div>
+                                    <div class="{{ isset($transaction->t_type) && $transaction->t_type == 'give' ? 'text-danger' : 'text-success' }} rounded-pill fs-6">{{ isset($transaction->t_type) && $transaction->t_type == 'give' ? '-' : '' }} ₹ {{$transaction->amount}}</div>
                                 </div>
                             </div>
                         </div>
