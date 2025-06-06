@@ -150,19 +150,31 @@ class CustomerTransactionController extends Controller
             $runningBalance += $transaction->type === 'give' ? $amount : -$amount;
 
             $transactionRows .= '<tr>'
-                . '<td style="line-height:30px !important;">' . Carbon::parse($transaction->transaction_date)->format('d-M-Y') . '</td>'
-                . '<td style="line-height:30px !important;">' . ($transaction->attachment 
-                    ? '<a href="' . asset('attachments/' . basename($transaction->attachment)) . '" target="_blank">attachment</a>' 
-                    : 'No Attachment') . '</td>'
-                . '<td style="line-height:30px !important;">' . ($transaction->type === 'give' ? number_format($amount, 2) : '') . '</td>'
-                . '<td style="line-height:30px !important;">' . ($transaction->type === 'take' ? number_format($amount, 2) : '') . '</td>'
-                . '<td style="line-height:30px !important;">₹' . number_format($runningBalance, 2) . '</td>'
-                . '</tr>';
+            . '<td style="line-height:30px !important;">' 
+                . Carbon::parse($transaction->transaction_date)->format('d-M-Y') 
+            . '</td>'
+            . '<td style="line-height:30px !important;">' 
+                . ($transaction->attachment 
+                    ? '<a href="' . htmlspecialchars(url('attachments/' . basename($transaction->attachment))) . '" target="_blank">attachment</a>' 
+                    : 'No Attachment') 
+            . '</td>'
+            . '<td style="line-height:30px !important;">' 
+                . ($transaction->type === 'give' ? number_format(str_replace('-', '', $amount), 2) : '') 
+            . '</td>'
+            . '<td style="line-height:30px !important;">' 
+                . ($transaction->type === 'take' ? number_format(str_replace('-', '', $amount), 2) : '') 
+            . '</td>'
+            . '<td style="line-height:30px !important;">₹' 
+                . number_format(str_replace('-', '', $runningBalance), 2) 
+            . '</td>'
+            . '</tr>';
+
                 
         }
 
         $finalAmount = $runningBalance;
         $finalAmountColor = $finalAmount < 0 ? 'green' : 'red';
+        $trimAmount = number_format(str_replace('-', '', $finalAmount), 2);
 
         $html = <<<HTML
         <style>
@@ -215,7 +227,7 @@ class CustomerTransactionController extends Controller
                 <td><strong>Opening Balance:</strong><br><br> ₹0.00</td>
                 <td><strong>Total Debit:</strong><br><br> ₹{$totalDebit}</td>
                 <td><strong>Total Credit:</strong><br><br> ₹{$totalCredit}</td>
-                <td><strong>Net Balance:</strong><br><br> <span style="color:{$finalAmountColor}">₹{$finalAmount}</span></td>
+                <td><strong>Net Balance:</strong><br><br> <span style="color:{$finalAmountColor}">₹{$trimAmount}</span></td>
             </tr>
         </table><br>
 

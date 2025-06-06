@@ -78,7 +78,7 @@
                 <div class="col">
                     <p>Net Balance</p>
                     <h6 class="{{ $finalAmount < 0 ? 'text-danger' : 'text-success' }}">
-                        ₹{{ number_format(abs($finalAmount), 2) }}
+                        ₹{{ number_format(str_replace('-', '', abs($finalAmount)), 2) }}
                     </h6>
                 </div>
             </div>
@@ -121,9 +121,9 @@
                                         <span>No Attachment</span>
                                     @endif
                                 </td>
-                                <td>{{ $transaction->t_type === 'give' ? number_format($transaction->amount, 2) : '' }}</td>
-                                <td>{{ $transaction->t_type === 'take' ? number_format($transaction->amount, 2) : '' }}</td>
-                                <td>₹{{ number_format($runningBalance, 2) }}</td>
+                                <td>{{ $transaction->t_type === 'give' ? number_format(str_replace('-', '', $transaction->amount), 2) : '' }}</td>
+                                <td>{{ $transaction->t_type === 'take' ? number_format(str_replace('-', '', $transaction->amount), 2) : '' }}</td>
+                                <td>₹{{ number_format(str_replace('-', '', $runningBalance), 2) }}</td>
                             </tr>
                         @endforeach
                     </tbody>

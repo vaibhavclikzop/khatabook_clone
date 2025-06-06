@@ -39,7 +39,7 @@
                             <div class="card-body">
                                 <h6 class="mb-0">You will give</h6>
                                 <p class="small text-success">₹ @if ($finalAmount >= 0)
-                                        {{ $finalAmount }}
+                                        {{ number_format(str_replace('-', '', $finalAmount), 2) }}
                                     @endif
                                 </p>
                             </div>
@@ -50,7 +50,7 @@
                             <div class="card-body">
                                 <h6 class="mb-0">You will get</h6>
                                 <p class="small text-danger">₹ @if ($finalAmount <= 0)
-                                        {{ $finalAmount }}
+                                        {{ number_format(str_replace('-', '', $finalAmount), 2) }}
                                     @endif
                                 </p>
                             </div>

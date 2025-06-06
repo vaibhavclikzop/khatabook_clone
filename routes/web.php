@@ -108,6 +108,6 @@ Route::middleware(['verify_user'])->group(function () {
     Route::put('/customer/{id}', [CustomerTransactionController::class, 'customer_update'])->name('customer.update');
     Route::delete('/customer/delete/{id}', [CustomerTransactionController::class, 'customer_delete'])->name('customer.delete');
     Route::post('/gave-money', [CustomerTransactionController::class, 'gave_money'])->name('gave.money');
-    Route::get('/customer/{id}/pdf-report', [CustomerTransactionController::class, 'generate_pdf_report'])->name('generate.pdf.report');
+    Route::get('/generate-report/{id}', [CustomerTransactionController::class, 'generate_report'])->name('generate.report');
 });
-Route::get('/generate-report/{id}', [CustomerTransactionController::class, 'generate_report'])->name('generate.report');
+Route::get('/customer/{id}/pdf-report', [CustomerTransactionController::class, 'generate_pdf_report'])->name('generate.pdf.report');
