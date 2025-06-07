@@ -38,12 +38,8 @@
                         <div class="card adminuiux-card mb-3">
                             <div class="card-body">
                                 <h6 class="mb-0">You will give</h6>
-                                <p class="small text-success">₹ @if ($finalAmount >= 0)
-                                        {{ number_format(str_replace('-', '', $finalAmount), 2) }}
-                                    @endif
-                                    @if (isset($dfg))
-                                        {{ number_format($dfg, 2) }}
-                                    @endif
+                                <p class="small text-success">₹
+                                    {{ number_format($totalTakeQuery) }}
                                 </p>
                             </div>
                         </div>
@@ -52,8 +48,8 @@
                         <div class="card adminuiux-card mb-3">
                             <div class="card-body">
                                 <h6 class="mb-0">You will get</h6>
-                                <p class="small text-danger">- ₹ @if ($finalAmount <= 0)
-                                        {{ number_format(str_replace('-', '', $finalAmount), 2) }}
+                                <p class="small text-danger">- ₹ @if ($totalGiveQuery)
+                                        {{ number_format(str_replace('-', '', $totalGiveQuery), 2) }}
                                     @endif
                                 </p>
                             </div>

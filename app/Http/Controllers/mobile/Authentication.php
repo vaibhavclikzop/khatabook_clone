@@ -70,25 +70,34 @@ class Authentication extends Controller
         $user = DB::table('users')->where('id', session()->get('user_id'))->value('my_business');
 
         $customers_info = DB::table('customers')
-        ->where('user_id', session()->get('user_id'))
-        ->select('customers.id', 'customers.name', 'customers.number', 'customers.type')
-        ->addSelect([
-            'final_amount' => DB::table('transactions')
-                ->selectRaw('SUM(CASE WHEN type = "take" THEN amount ELSE -amount END)')
-                ->whereColumn('transactions.customer_id', 'customers.id')
-                ->groupBy('transactions.customer_id'),
-            'latest_transaction_type' => DB::table('transactions')
-                ->select('type')
-                ->whereColumn('transactions.customer_id', 'customers.id')
-                ->orderBy('created_at', 'desc')
-                ->limit(1),
-        ])
-        ->paginate(10);
+            ->where('user_id', session()->get('user_id'))
+            ->select('customers.id', 'customers.name', 'customers.number', 'customers.type')
+            ->addSelect([
+                'final_amount' => DB::table('transactions')
+                    ->selectRaw('SUM(CASE WHEN type = "take" THEN amount ELSE -amount END)')
+                    ->whereColumn('transactions.customer_id', 'customers.id'),
+                'latest_transaction_type' => DB::table('transactions')
+                    ->select('type')
+                    ->whereColumn('transactions.customer_id', 'customers.id')
+                    ->orderBy('created_at', 'desc')
+                    ->limit(1),
+            ])
+            ->orderBy('updated_at', 'desc')
+            ->paginate(10);
+
+        $totalTakeQuery = DB::table('customers')
+            ->where('transaction_type', 'take')
+            ->where('user_id', session()->get('user_id'))
+            ->sum('transaction_amount');
+
+        $totalGiveQuery = DB::table('customers')
+            ->where('transaction_type', 'give')
+            ->where('user_id', session()->get('user_id'))
+            ->sum('transaction_amount');
 
         $transactions = DB::table('transactions')
             ->where('transactions.user_id', session()->get('user_id'))
             ->get();
-            
 
         $finalAmount = 0;
         foreach ($transactions as $transaction) 
@@ -102,9 +111,10 @@ class Authentication extends Controller
                 $finalAmount -= $transaction->amount;
             }
         }
-        
-        return view('mobile.dashboard', compact('user', 'customers_info', 'finalAmount'));
+
+        return view('mobile.dashboard', compact('user', 'customers_info', 'finalAmount', 'totalGiveQuery', 'totalTakeQuery'));
     }
+
 
     public function logout(Request $request)
     {

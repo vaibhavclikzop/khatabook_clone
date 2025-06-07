@@ -34,7 +34,7 @@
                         </p>
                     </div>
                     <div class="col-2">
-                        <a href="tel:+{{$customer->number}}"><i class="fa fa-phone"></i></a>
+                        <a href="tel:+{{isset($customer->number) && !empty($customer->number) ? $customer->number : 000}}"><i class="fa fa-phone"></i></a>
                     </div>
                 </div>
             </div>

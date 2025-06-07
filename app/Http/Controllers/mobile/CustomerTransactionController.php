@@ -295,9 +295,8 @@ class CustomerTransactionController extends Controller
         try 
         {
             DB::beginTransaction();
-
             $filePath = null;
-            
+
             if ($request->hasFile('attachment')) 
             {
                 $filePath = time() . '.' . $request->file('attachment')->extension();
@@ -309,15 +308,15 @@ class CustomerTransactionController extends Controller
                 'user_id'          => $request->user_id,
                 'amount'           => $request->amount,
                 'type'             => $request->type,
-                'description' => $request->description,
+                'description'      => $request->description,
                 'transaction_date' => $request->transaction_date ? $request->transaction_date : now(),
                 'attachment'       => $filePath,
                 'created_at'       => now(),
                 'updated_at'       => now(),
             ]);
 
+            $this->updateCustomerDetails($request->customer_id);
             DB::commit();
-
             Flasher::addSuccess('Success', 'Transaction recorded successfully.');
             return redirect()->back();
         } 
@@ -373,14 +372,40 @@ class CustomerTransactionController extends Controller
         return redirect()->back()->with('success', 'Transaction updated successfully.');
     }
 
-
     public function destroy($id)
     {
         $transaction = Transaction::findOrFail($id);
+        $customer_id = $transaction->customer_id;
         $transaction->delete();
+        $this->updateCustomerDetails($customer_id);
+        return redirect()
+            ->route('view.transaction', ['id' => $customer_id])
+            ->with('success', 'Transaction deleted and customer details updated successfully.');
+    }
 
-        return redirect()->route('view.transaction', ['id' => $transaction->customer_id])
-        ->with('success', 'Transaction deleted successfully.');
+    private function updateCustomerDetails($customer_id)
+    {
+        $totalGive = DB::table('transactions')
+            ->where('customer_id', $customer_id)
+            ->where('type', 'give')
+            ->sum('amount');
+
+        $totalTake = DB::table('transactions')
+            ->where('customer_id', $customer_id)
+            ->where('type', 'take')
+            ->sum('amount');
+
+        $netAmount = $totalTake - $totalGive;
+
+        $transactionType = $netAmount < 0 ? 'give' : 'take';
+
+        DB::table('customers')
+            ->where('id', $customer_id)
+            ->update([
+                'transaction_type'   => $transactionType,
+                'transaction_amount' => abs($netAmount),
+                'updated_at'         => now(),
+            ]);
     }
 
     public function customer_update(Request $request, $id)

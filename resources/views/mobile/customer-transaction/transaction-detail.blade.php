@@ -63,5 +63,9 @@
             </div>
         </footer>
     </div>
+    <form id="deleteForm" action="{{ route('transaction.delete', ['id' => $transaction->id]) }}" method="POST">
+        @csrf
+        @method('DELETE')
+    </form>
     @include('mobile/modals/edit-entry-modal')
 @endsection
