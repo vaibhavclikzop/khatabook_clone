@@ -132,13 +132,13 @@ class CustomerTransactionController extends Controller
         }
 
         $transactions = DB::table('transactions')
-        ->where('customer_id', $id)
-        ->orderBy('created_at', 'asc')
-        ->get(['id', 'transaction_date', 'type', 'amount', 'attachment', 'created_at']);
+            ->where('customer_id', $id)
+            ->orderBy('created_at', 'asc')
+            ->get(['id', 'transaction_date', 'type', 'amount', 'attachment', 'created_at']);
 
         $totalEntries = $transactions->count();
-        $totalDebit = $transactions->where('type', 'give')->sum('amount');
-        $totalCredit = $transactions->where('type', 'take')->sum('amount');
+        $totalDebit = 0;
+        $totalCredit = 0;
         $runningBalance = 0;
         $transactionRows = '';
         $oldestTransactionDate = $transactions->isNotEmpty() ? Carbon::parse($transactions->last()->transaction_date)->format('d-M-Y') : 'N/A';
@@ -147,7 +147,17 @@ class CustomerTransactionController extends Controller
         foreach ($transactions as $transaction) 
         {
             $amount = $transaction->amount;
-            $runningBalance += $transaction->type === 'give' ? $amount : -$amount;
+
+            if ($transaction->type === 'give') 
+            {
+                $totalDebit += $amount;
+                $runningBalance += $amount;
+            } 
+            elseif ($transaction->type === 'take') 
+            {
+                $totalCredit += $amount;
+                $runningBalance -= $amount;
+            }
 
             $transactionRows .= '<tr>'
             . '<td style="line-height:30px !important;">' 
@@ -159,22 +169,28 @@ class CustomerTransactionController extends Controller
                     : 'No Attachment') 
             . '</td>'
             . '<td style="line-height:30px !important;">' 
-                . ($transaction->type === 'give' ? number_format(str_replace('-', '', $amount), 2) : '') 
+                . ($transaction->type === 'give' ? '₹ ' . number_format($amount, 2) : '') 
             . '</td>'
             . '<td style="line-height:30px !important;">' 
-                . ($transaction->type === 'take' ? number_format(str_replace('-', '', $amount), 2) : '') 
+                . ($transaction->type === 'take' ? '₹ ' . number_format($amount, 2) : '') 
             . '</td>'
-            . '<td style="line-height:30px !important;">₹' 
-                . number_format(str_replace('-', '', $runningBalance), 2) 
+            . '<td style="line-height:30px !important;">' 
+                . ($runningBalance < 0 
+                    ? '- ₹ ' . number_format(abs($runningBalance), 2) 
+                    : '₹ ' . number_format($runningBalance, 2)) 
             . '</td>'
             . '</tr>';
-
-                
         }
 
-        $finalAmount = $runningBalance;
-        $finalAmountColor = $finalAmount < 0 ? 'green' : 'red';
-        $trimAmount = number_format(str_replace('-', '', $finalAmount), 2);
+        $finalAmountColor = $runningBalance < 0 ? 'green' : 'red';
+        $transactionRows .= '<tr style="font-weight: bold;">'
+        . '<td colspan="2" style="text-align: right; line-height:30px !important;">Totals:</td>'
+        . '<td style="line-height:30px !important; color: #000;">₹ ' . number_format($totalDebit, 2) . '</td>'
+        . '<td style="line-height:30px !important; color: #000;">₹ ' . number_format($totalCredit, 2) . '</td>'
+        . '<td style="line-height:30px !important; color: ' . $finalAmountColor . ';">' 
+        . ($runningBalance < 0 ? '₹ ' . number_format(abs($runningBalance), 2) : '- ₹ ' . number_format($runningBalance, 2)) 
+        . '</td>'
+        . '</tr>';
 
         $html = <<<HTML
         <style>
@@ -227,7 +243,7 @@ class CustomerTransactionController extends Controller
                 <td><strong>Opening Balance:</strong><br><br> ₹0.00</td>
                 <td><strong>Total Debit:</strong><br><br> ₹{$totalDebit}</td>
                 <td><strong>Total Credit:</strong><br><br> ₹{$totalCredit}</td>
-                <td><strong>Net Balance:</strong><br><br> <span style="color:{$finalAmountColor}">₹{$trimAmount}</span></td>
+                <td><strong>Net Balance:</strong><br><br> <span style="color:{$finalAmountColor}">₹{$runningBalance}</span></td>
             </tr>
         </table><br>
 
@@ -247,14 +263,13 @@ class CustomerTransactionController extends Controller
                 {$transactionRows}
             </tbody>
         </table>
-    HTML;
-
-        $pdf = new TCPDF();
-        $pdf->SetPrintHeader(false);
-        $pdf->SetPrintFooter(false);
-        $pdf->AddPage();
-        $pdf->SetFont('dejavusans', '', 10);
-        $pdf->writeHTML($html, true, false, true, false, '');
+        HTML;
+            $pdf = new TCPDF();
+            $pdf->SetPrintHeader(false);
+            $pdf->SetPrintFooter(false);
+            $pdf->AddPage();
+            $pdf->SetFont('dejavusans', '', 10);
+            $pdf->writeHTML($html, true, false, true, false, '');
 
         return $pdf->Output('statement.pdf', 'I');
     }

@@ -97,6 +97,8 @@
                     <tbody>
                         @php
                             $runningBalance = $oldestTransaction->amount ?? 0;
+                            $totalDebit = 0;
+                            $totalCredit = 0;
                         @endphp
 
                         @foreach ($transactions as $transaction)
@@ -104,10 +106,12 @@
                                 if ($transaction->t_type === 'take') 
                                 {
                                     $runningBalance -= $transaction->amount;
+                                    $totalCredit += $transaction->amount;
                                 } 
                                 elseif ($transaction->t_type === 'give') 
                                 {
                                     $runningBalance += $transaction->amount;
+                                    $totalDebit += $transaction->amount;
                                 }
                             @endphp
                             <tr>
@@ -121,11 +125,21 @@
                                         <span>No Attachment</span>
                                     @endif
                                 </td>
-                                <td>{{ $transaction->t_type === 'give' ? number_format(str_replace('-', '', $transaction->amount), 2) : '' }}</td>
-                                <td>{{ $transaction->t_type === 'take' ? number_format(str_replace('-', '', $transaction->amount), 2) : '' }}</td>
-                                <td>₹{{ number_format(str_replace('-', '', $runningBalance), 2) }}</td>
+                                <td>{{ $transaction->t_type === 'give' ? '₹ ' . number_format($transaction->amount, 2) : '' }}</td>
+                                <td>{{ $transaction->t_type === 'take' ? '₹ ' . number_format($transaction->amount, 2) : '' }}</td>
+                                <td>
+                                    {{ $runningBalance < 0 
+                                    ? '- ₹ ' . number_format(abs($runningBalance), 2) 
+                                    : '₹ ' . number_format($runningBalance, 2) }}
+                                </td>
                             </tr>
                         @endforeach
+                        <tr class="table-secondary">
+                            <th colspan="2">Totals:</th>
+                            <th>₹{{ $totalDebit < 0 ? '- ₹ ' . number_format(abs($totalDebit), 2) : number_format($totalDebit, 2) }}</th>
+                            <th>₹{{ $totalCredit < 0 ? '- ₹ ' . number_format(abs($totalCredit), 2) : number_format($totalCredit, 2) }}</th>
+                            <th class="{{ $runningBalance < 0 ? 'text-success' : 'text-danger' }}">{{ $runningBalance < 0 ? '₹ ' . number_format(abs($runningBalance), 2) : '- ₹ ' . number_format($runningBalance, 2) }}</th>
+                        </tr>
                     </tbody>
                 </table>
             </div>
