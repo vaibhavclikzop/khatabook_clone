@@ -138,7 +138,7 @@ class CustomerTransactionController extends Controller
 
         $totalEntries = $transactions->count();
         $totalDebit = $transactions->where('type', 'give')->sum('amount');
-        $totalCredit = $transactions->where('type', 'give')->sum('amount');
+        $totalCredit = $transactions->where('type', 'take')->sum('amount');
         $runningBalance = 0;
         $transactionRows = '';
         $oldestTransactionDate = $transactions->isNotEmpty() ? Carbon::parse($transactions->last()->transaction_date)->format('d-M-Y') : 'N/A';
