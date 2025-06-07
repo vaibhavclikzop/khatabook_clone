@@ -65201,7 +65201,8 @@ $(document).ready(function()
                     response.customers.forEach(function (customer) 
 					{
                         const lastInitial = customer.name.slice(-1).toUpperCase();
-
+   						const formattedAmount = customer.final_amount ? `₹ ${parseFloat(customer.final_amount).toFixed(2)}` : '₹ 0.00';
+						console.log(formattedAmount);
                         const item = `
 							<a href="${transactionRoute}/${customer.id}" class="list-group-item list-group-item-action p-3 w-100">
                                 <div class="d-flex align-items-center justify-content-between w-100">
@@ -65212,7 +65213,9 @@ $(document).ready(function()
                                         <h6 class="mb-1">${customer.name}</h6>
                                         <small class="text-muted">${customer.number}</small>
                                     </div>
-                                    <div class="badge bg-success rounded-pill">$ 80</div>
+                                    <div class="badge ${customer.final_amount >= 0 ? 'bg-success' : 'bg-danger'} rounded-pill">
+										${formattedAmount}
+									</div>
                                 </div>
                             </a>`;
                         container.append(item);

@@ -90,17 +90,24 @@ class UserController extends Controller
                 'message' => $validator->errors()->first()
             ], 400);
         }
-
         $search = $request->input('search');
         $user_id = $request->input('user_id');
 
         $customers = DB::table('customers')
-            ->where('user_id', $user_id)
+            ->leftJoin('transactions', 'transactions.customer_id', '=', 'customers.id')
+            ->select(
+                'customers.id',
+                'customers.name',
+                'customers.number',
+                DB::raw('COALESCE(SUM(CASE WHEN transactions.type = "take" THEN transactions.amount ELSE -transactions.amount END), 0) AS final_amount'),
+                DB::raw('(SELECT type FROM transactions WHERE transactions.customer_id = customers.id ORDER BY transactions.created_at DESC LIMIT 1) AS latest_transaction_type')
+            )
+            ->where('customers.user_id', $user_id)
             ->when($search, function ($query, $search) 
             {
-                return $query->where('name', 'like', '%' . $search . '%');
+                return $query->where('customers.name', 'like', '%' . $search . '%');
             })
-            ->select('name', 'number', 'id')
+            ->groupBy('customers.id', 'customers.name', 'customers.number')
             ->limit(10)
             ->get();
 
