@@ -39,7 +39,7 @@
                             <div class="card-body">
                                 <h6 class="mb-0">You will give</h6>
                                 <p class="small text-success">₹
-                                    {{ number_format($totalTakeQuery) }}
+                                    {{ isset($totalTakeQuery) && !empty($totalTakeQuery) ? number_format($totalTakeQuery) : 0 }}
                                 </p>
                             </div>
                         </div>
@@ -48,9 +48,8 @@
                         <div class="card adminuiux-card mb-3">
                             <div class="card-body">
                                 <h6 class="mb-0">You will get</h6>
-                                <p class="small text-danger">- ₹ @if ($totalGiveQuery)
-                                        {{ number_format(str_replace('-', '', $totalGiveQuery), 2) }}
-                                    @endif
+                                <p class="small text-danger">
+                                    - ₹ {{ isset($totalGiveQuery) && $totalGiveQuery ? number_format(abs($totalGiveQuery), 2) : '0.00' }}
                                 </p>
                             </div>
                         </div>
