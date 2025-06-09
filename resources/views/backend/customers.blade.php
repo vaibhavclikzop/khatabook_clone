@@ -12,19 +12,35 @@
     @endforeach
     <div class="card">
         <div class="card-header d-flex justify-content-between">
-            <div class="page-title">
-                <h4>{{ request()->is('*/supplier*') ? 'Supplier List' : 'Customer List' }}</h4>
-                @if ($errors->any())
-                            <div class="alert alert-danger">
-                                <strong>There were some errors:</strong>
-                                <ul>
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
-            </div>
+
+            <!-- Bootstrap Nav Tabs -->
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link {{ Request::is('v1/customers*') ? 'active' : '' }}" id="customer-tab"
+                        data-bs-toggle="tab" data-bs-target="#customer-tab-pane" type="button" role="tab">
+                        Customer
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link {{ Request::is('v1/suppliers*') ? 'active' : '' }}" id="supplier-tab"
+                        data-bs-toggle="tab" data-bs-target="#supplier-tab-pane" type="button" role="tab">
+                        Supplier
+                    </button>
+                </li>
+            </ul>
+
+            @if ($errors->any())
+                <div class="alert alert-danger mt-2">
+                    <strong>There were some errors:</strong>
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+
             <div>
                 @if ($edit == 1)
                     <button type="button" class="btn btn-primary add">
@@ -35,83 +51,136 @@
             </div>
         </div>
 
+        <div class="container mt-4">
+            <div class="row">
+                <div class="col-4">
+                    <div class="p-3 border bg-light text-center">You'll Give &nbsp;&nbsp; <span
+                            class="text-success">{{ $takeTotal }}</span> </div>
+                </div>
+                <div class="col-4">
+                    <div class="p-3 border bg-light text-center">You'll Get &nbsp;&nbsp; <span
+                            class="text-danger">{{ $giveTotal }}</span></div>
+                </div>
+                {{-- <div class="col-4">
+                    <div class="p-3 border bg-light text-center"> </div>
+                </div> --}}
+            </div>
+        </div>
+
         <div class="card-body">
-            <table class="table dataTable">
-                <thead>
-                    <tr>
-                        <th>S.no</th>
-                        <th>Name</th>
-                        <th>Number</th>
-                        <th>Email</th>
-                        <th>Address</th>
-                        <th>City</th>
-                        <th>District</th>
-                        <th>State</th>
-                        <th>Pincode</th>
-                        <th>Active</th>
-                        @if ($edit == 1)
-                            <th>Action</th>
-                        @endif
+            <div class="row">
+                <!-- Left Column -->
+                <div class="col-6">
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="customer-tab-pane" role="tabpanel">
+                            <table class="table dataTable">
+                                <thead>
+                                    <tr>
+                                        <th>S.no</th>
+                                        <th>Name</th>
+                                        <th>Amount</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $sno = 1;
+                                    @endphp
+                                    @foreach ($customers as $item)
+                                        <tr class="customer" data-id="{{ $item->id }} " data-type="customer">
+                                            <td>{{ $sno++ }}</td>
+                                            <td>{{ $item->name }}</td>
+                                            <td class="text-danger balance{{$item->id}}"></td>
+                                            <td>
+                                                <button type="button" data-id="{{ $item->id }}"
+                                                    class="btn btn-success btn-sm transaction" data-bs-toggle="modal"
+                                                    title="Add Transaction" data-bs-target="#exampleModal1">
+                                                    <i class="fa-solid fa-money-bill"></i>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+
+                            </table>
+                        </div>
+
+                        <div class="tab-pane fade" id="supplier-tab-pane" role="tabpanel">
+                            <table class="table dataTable">
+                                <thead>
+                                    <tr>
+                                        <th>S.no</th>
+                                        <th>Name</th>
+                                        <th>Amount</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $sno = 1;
+                                    @endphp
+                                    @foreach ($supplier as $item)
+                                        <tr class="customer" data-id="{{ $item->id }}" data-type="supplier">
+                                            <td>{{ $sno++ }}</td>
+                                            <td>{{ $item->name }}</td>
+                                            <td class="text-danger"></td>
+                                            <td>
+                                                <button type="button" data-id="{{ $item->id }}"
+                                                    class="btn btn-success btn-sm transaction" data-bs-toggle="modal"
+                                                    title="Add Transaction" data-bs-target="#exampleModal1">
+                                                    <i class="fa-solid fa-money-bill"></i>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
 
 
-                    </tr>
-                </thead>
-                <tbody>
-                    @php
-                        $sno = 1;
-                    @endphp
-                    @foreach ($customers as $item)
-                        <tr>
-                            <td>{{ $sno++ }}</td>
+                <div class="col-6">
+                    <div class="p-3 border bg-light">
 
-                            <td>{{ $item->name }}</td>
-                            <td>{{ $item->number }}</td>
-                            <td>{{ $item->email }}</td>
+                        <div class="container mt-4">
+                            <div class="row">
+                                <div class="col-4 name">
+                                    
+                                </div>
+                                <div class="col-4">
+                               
+                                </div>
+                                <div class="col-4">
+                                    <div class="p-3 border bg-light text-center">Balance &nbsp;&nbsp; <span
+                                            class="text-success balance"></span></div>
+                                </div>
 
-                            <td>{{ $item->address }}</td>
-                            <td>{{ $item->city1 }}</td>
-                            <td>{{ $item->city }}</td>
-                            <td>{{ $item->state }}</td>
-                            <td>{{ $item->pincode }}</td>
+                            </div>
+                        </div>
 
-                            @if ($item->active == 1)
-                                <td><span class="badge badge-success">Active</span></td>
-                            @else
-                                <td><span class="badge badge-danger">InActive</span></td>
-                            @endif
+                        <table class="table " id="printorder" style="display:none;">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
 
-                            @if ($edit == 1)
-                                <td><button class="btn btn-primary btn-sm edit" type="button"
-                                        data-id="{{ $item->id }}" data-name="{{ $item->name }}"
-                                        data-number="{{ $item->number }}" data-email="{{ $item->email }}"
-                                        data-gst="{{ $item->gst }}" data-address="{{ $item->address }}"
-                                        data-state="{{ $item->state }}" data-city="{{ $item->city }}"
-                                        data-pincode="{{ $item->pincode }}" data-active="{{ $item->active }}"
-                                        data-dob="{{ $item->dob }}" data-pan_card="{{ $item->pan_card }}"
-                                        data-adhar_card="{{ $item->adhar_card }}" data-city1="{{ $item->city1 }}"
-                                        data-so_wo="{{ $item->so_wo }}" data-rating="{{ $item->rating }}"
-                                        data-project="{{ $item->project }}" data-unit_no="{{ $item->unit_no }}"
-                                        data-type="{{ $item->type }}"><i class="fa fa-pencil"
-                                            aria-hidden="true"></i></button>
-                                    <button type="button" data-id="{{ $item->id }}"
-                                        class="btn btn-success btn-sm transaction" data-bs-toggle="modal" title="Add Transaction"
-                                        data-bs-target="#exampleModal1">
-                                     <i class="fa-solid fa-money-bill"></i>
-                                    </button>
-                                    <a title="View Transaction" class="btn btn-sm btn-info" href="{{ route('viewTransaction', $item->id) }}"><i class="fa-solid fa-money-bill"></i></a>
+                                    <th>Amount</th>
+                                    <th>You Gave</th>
+                                    <th>You Got</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{-- This will be filled dynamically by JS --}}
+                            </tbody>
+                        </table>
 
-                                </td>
-                            @endif
-
-
-                        </tr>
-                    @endforeach
-                </tbody>
-
-            </table>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>
+
 
 
 
@@ -197,7 +266,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">Add Transaction</h5>
-                        
+
 
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
@@ -245,7 +314,8 @@
 
                         <div class="mb-3">
                             <label for="ref_id" class="form-label">Reference</label>
-                            <input type="text" class="form-control" name="ref_id" id="ref_id" placeholder="Add Reference"> 
+                            <input type="text" class="form-control" name="ref_id" id="ref_id"
+                                placeholder="Add Reference">
                         </div>
 
                         <!-- Transaction Date -->
@@ -289,7 +359,7 @@
             $("#rating").val($(this).data("rating"));
             $('#type').val($(this).data('type'));
 
-            
+
             $("#modal_name").text("Update customers");
 
             if ($(this).data("source") == "Reference") {
@@ -353,6 +423,85 @@
                 console.log(id);
                 $("#customer_id").val($(this).data("id"));
 
+            });
+        });
+
+
+
+        $(document).ready(function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $(document).on("click", ".customer", function() {
+                var id = $(this).data("id");
+
+
+                $.ajax({
+                    url: '{{ route('viewTransaction') }}',
+                    type: 'post',
+                    data: {
+                        id: id,
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        console.log('Success:', response);
+
+                        var transactions = response.transactions;
+                        var tbody = $('#printorder tbody');
+                        tbody.empty(); // Clear existing rows
+
+                        transactions.forEach(function(row, index) {
+                            var imagePath = row.file ?
+                                '/attachments/' + row.file :
+                                '/images/no_image.jpg';
+
+                            var typeColor = row.type === 'give' ? 'green' : (row
+                                .type === 'take' ? 'red' : 'black');
+
+                            var transactionDate = new Date(row.transaction_date)
+                                .toISOString().split('T')[0];
+
+                            var html = `
+            <tr>
+                <td>${index + 1}</td>
+        
+                <td>${row.amount}</td>
+                <td style="color: ${typeColor};">${row.type}</td>
+         
+                <td>
+                    <div class="d-flex gap-1">
+                       
+                        <form action="/transaction/delete/${row.id}" method="POST"
+                            onsubmit="return confirm('Are you sure you want to delete this transaction?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <button class="btn btn-danger btn-sm" title="Delete Transaction">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+        `;
+
+                            tbody.append(html);
+                        });
+
+                        // Optional: Show the table if it was hidden
+                        $('#printorder').show();
+
+                        $('.name').text("Name = " + response.customer['name']);
+                        $('.balance'+id).text(response.balance);
+                        $('.balance').text(response.balance);
+
+
+                    },
+                    error: function(xhr) {
+                        console.log('Error:', xhr.responseText);
+                    }
+                });
             });
         });
     </script>

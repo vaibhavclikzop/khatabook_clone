@@ -493,7 +493,7 @@
                                              </a>
                                              <ul>
                                                  <li><a href="{{ route('customers') }}">Customers</a></li>
-                                                 <li><a href="{{ route('suppliers') }}">Supplier</a></li>
+                                                 {{-- <li><a href="{{ route('suppliers') }}">Supplier</a></li> --}}
 
                                              </ul>
                                          </li>

@@ -33,19 +33,15 @@ class TransactionController extends Controller
         $data['file'] = $file;
 
 
-DB::beginTransaction();
+        DB::beginTransaction();
 
         try {
-
-            
-
             $transaction = Transaction::create($data);
 
             DB::commit();
 
             return redirect()->back()->with('success', 'Trasaction Create Successfully');
         } catch (\Exception $e) {
-            // Rollback the transaction in case of error
             DB::rollBack();
 
             return redirect()->back()->with('error', $e);
@@ -69,7 +65,7 @@ DB::beginTransaction();
         } elseif (!empty($_GET['to_date'])) {
             $query->whereDate('created_at', '<=', $_GET['to_date']);
         }
-        // dd($query);
+
         $transactions = $query->get();
         $customers = Customer::get();
 
@@ -77,27 +73,59 @@ DB::beginTransaction();
     }
 
 
-    public function viewTransactions($id)
-    {
+    // public function viewTransactions($id)
+    // {
 
-        $transactions = Transaction::where('customer_id', $id)->get();
+    //     $transactions = Transaction::where('customer_id', $id)->get();
 
-        $customer = Customer::find($id);
+    //     $customer = Customer::find($id);
 
-        $giveTotal = Transaction::where('customer_id', $id)
-            ->where('type', 'give')
-            ->sum('amount');
+    //     $giveTotal = Transaction::where('customer_id', $id)
+    //         ->where('type', 'give')
+    //         ->sum('amount');
 
-        $takeTotal = Transaction::where('customer_id', $id)
-            ->where('type', 'take')
-            ->sum('amount');
 
-        $amount = $giveTotal - $takeTotal;
 
-        $balance = $this->formatIndianRupee($amount);
+    //     $takeTotal = Transaction::where('customer_id', $id)
+    //         ->where('type', 'take')
+    //         ->sum('amount');
 
-        return view('backend.viewTransaction', compact('transactions', 'customer', 'giveTotal', 'takeTotal', 'balance', 'id'));
-    }
+    //     $amount = $giveTotal - $takeTotal;
+
+    //     $balance = $this->formatIndianRupee($amount);
+
+    //     return view('backend.viewTransaction', compact('transactions', 'customer', 'giveTotal', 'takeTotal', 'balance', 'id'));
+    // }
+
+public function viewTransactions(Request $request) 
+{
+    $id = $request->input('id');
+
+    $transactions = Transaction::where('customer_id', $id)->get();
+    $customer = Customer::find($id);
+
+    $giveTotal = Transaction::where('customer_id', $id)
+        ->where('type', 'give')
+        ->sum('amount');
+
+    $takeTotal = Transaction::where('customer_id', $id)
+        ->where('type', 'take')
+        ->sum('amount');
+
+    $amount = $giveTotal - $takeTotal;
+    $balance = $this->formatIndianRupee($amount);
+
+    return response()->json([
+        'transactions' => $transactions,
+        'customer' => $customer,
+        'giveTotal' => $giveTotal,
+        'takeTotal' => $takeTotal,
+        'balance' => $balance,
+        'id' => $id
+    ]);
+}
+
+
 
     public function editTransaction(TransactionRequest $request)
     {
@@ -117,7 +145,7 @@ DB::beginTransaction();
             $transaction->payment_mode = $request->payment_mode;
             $transaction->transaction_date = $request->transaction_date;
             $transaction->ref_id = $request->ref_id;
-
+            $transaction->file = $file;
             $transaction->save();
 
             return redirect()->back()->with('success', 'Transaction updated successfully.');

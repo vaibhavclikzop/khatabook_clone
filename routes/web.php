@@ -84,9 +84,9 @@ Route::group(['prefix' => 'v1'], function () {
         // ************************************Transaction Routes**************************************
         Route::post('save-transaction',[TransactionController::class,'saveTransaction'])->name('saveTransaction');
         Route::get('transactions',[TransactionController::class,'transactions'])->name('transactions');
-        Route::get('view-transactions/{id}',[TransactionController::class,'viewTransactions'])->name('viewTransaction');
+        Route::Post('view-transactions',[TransactionController::class,'viewTransactions'])->name('viewTransaction');
         Route::post('edit-transaction',[TransactionController::class,'editTransaction'])->name('edit_transaction');
-        Route::delete('/transaction/{id}', [TransactionController::class, 'deleteTransaction'])->name('transaction.delete');
+        Route::delete('/transaction/delete/{id}', [TransactionController::class, 'deleteTransaction'])->name('transaction.delete');
     });
 
 });

@@ -4,14 +4,16 @@ namespace App\Http\Controllers\backend;
 use Exception;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
+use App\Models\Transaction;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use App\Traits\CustomTrait;
 
 
 
 class Masters extends Controller
 {
+    use CustomTrait;
         function generateRandomNumber($length = 12)
     {
         $number = '';
@@ -30,10 +32,44 @@ class Masters extends Controller
     
     public function Customers(Request $request)
     {
-        $customers = DB::table("customers")->where('type','customer')->get();
-        
+    $customers = DB::table('customers')
+    ->leftJoin('transactions', function($join) {
+        $join->on('customers.id', '=', 'transactions.customer_id')
+             ->where('transactions.type', '=', 'give');
+    })
+    ->where('customers.type', 'customer')
+    ->select(
+        'customers.id',
+        'customers.name',
+        DB::raw('SUM(transactions.amount) as total_take_amount')
+    )
+    ->groupBy('customers.id', 'customers.name') 
+    ->get();
 
-        return view("backend.customers", compact('customers'));
+
+
+      $supplier = DB::table('customers')
+    ->leftJoin('transactions', function($join) {
+        $join->on('customers.id', '=', 'transactions.customer_id')
+             ->where('transactions.type', '=', 'give');
+    })
+    ->where('customers.type', 'supplier')
+    ->select(
+        'customers.id',
+        'customers.name',
+        DB::raw('SUM(transactions.amount) as total_take_amount')
+    )
+    ->groupBy('customers.id', 'customers.name') 
+    ->get();
+
+        $giveTotalsum = Transaction::where('type','give')->sum('amount');
+        $takeTotalsum = Transaction::where('type','take')->sum('amount');
+
+       $takeTotal = $this->formatIndianRupee($takeTotalsum);
+       $giveTotal = $this->formatIndianRupee($giveTotalsum);
+    //    dd($takeTotal,$giveTotal);
+
+        return view("backend.customers", compact('customers','supplier','giveTotal','takeTotal'));
     }
 
 
@@ -353,7 +389,8 @@ class Masters extends Controller
     }
 
     public function supplier(){
-        $customers = DB::table("customers")->where('type','supplier')->get();
-        return view("backend.customers", compact('customers'));
+        $customers = DB::table("customers")->where('type','customer')->get();
+        $supplier = DB::table("customers")->where('type','supplier')->get();
+        return view("backend.customers", compact('customers','supplier'));
     }
 }
