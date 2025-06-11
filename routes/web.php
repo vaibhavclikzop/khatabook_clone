@@ -100,7 +100,7 @@ Route::middleware(['verify_user'])->group(function () {
     Route::post('/my-business', [UserController::class, 'my_business'])->name('user.business');
     Route::post('/filter-customers', [UserController::class, 'filter_customer'])->name('user.filter');
     Route::post('/add-customers', [UserController::class, 'add_customers'])->name('add.customers');
-
+    Route::get('mobile/logout', [Authentication::class, 'mobile_logout'])->name('mobile.Logout');
     Route::get('/transaction/{id}', [CustomerTransactionController::class, 'view_transaction'])->name('view.transaction');
     Route::get('/transaction-detail/{id}', [CustomerTransactionController::class, 'view_transaction_detail'])->name('view.transaction_detail');
     Route::delete('/transaction/{id}', [CustomerTransactionController::class, 'destroy'])->name('transaction.delete');

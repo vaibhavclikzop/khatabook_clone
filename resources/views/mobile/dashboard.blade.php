@@ -79,7 +79,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link gap-3" id="logout" href="{{ route('Logout') }}">
+                    <a class="nav-link gap-3" id="logout" href="{{ route('mobile.Logout') }}">
                         <i class="fa-solid fa-sign-out"></i>
                         <span class="nav-text">Logout</span>
                     </a>

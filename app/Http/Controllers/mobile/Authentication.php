@@ -116,7 +116,7 @@ class Authentication extends Controller
     }
 
 
-    public function logout(Request $request)
+    public function mobile_logout(Request $request)
     {
         DB::table('users')->where("token", session("token"))->update(array(
             'token' => "",
